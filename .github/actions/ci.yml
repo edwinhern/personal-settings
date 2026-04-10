@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 5"
+
+jobs:
+  lint:
+    name: Lint shell scripts and markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: asdf-vm/actions/install@v4
+      - run: make lint
+
+  actions_lint:
+    name: Lint GitHub Actions workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
