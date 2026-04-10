@@ -1,0 +1,2 @@
+# plugin-name  git-url                                               git-ref (hash, tag, or branch)
+apm https://github.com/edwinhern/asdf-apm main

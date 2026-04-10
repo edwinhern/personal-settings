@@ -22,11 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: asdf-vm/actions/plugins-add@v4
-        with:
-          tool_versions: |
-            apm https://github.com/edwinhern/asdf-apm
-      - uses: asdf-vm/actions/install@v4
+      - name: Install ASDF
+        uses: asdf-vm/actions/setup@v4
+      - name: Add custom plugins
+        run: sh scripts/setup-plugins.sh
+      - name: Install tools
+        run: asdf install
       - run: make compile
 
   actions_lint:
