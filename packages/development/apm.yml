@@ -1,0 +1,10 @@
+name: development
+version: 1.0.0
+description: APM project for development
+author: Edwin Hernandez
+dependencies:
+  apm:
+    - obra/superpowers
+    - upstash/context7/plugins/claude/context7
+  mcp: []
+w

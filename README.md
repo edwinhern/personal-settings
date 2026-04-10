@@ -10,3 +10,5 @@ personal-settings/
     ├── agents/          # Personas (.agent.md)
     └── hooks/           # Event handlers (.json)
 ```
+
+- [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills)

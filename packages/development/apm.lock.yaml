@@ -1,0 +1,17 @@
+lockfile_version: '1'
+generated_at: '2026-04-10T20:20:16.337837+00:00'
+apm_version: 0.8.11
+dependencies:
+- repo_url: upstash/context7
+  host: github.com
+  resolved_commit: 00833f92623032dd643974048f9817dd0f1694cc
+  virtual_path: plugins/claude/context7
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/agents/docs-researcher.agent.md
+  - .github/prompts/docs.prompt.md
+  - .github/skills/context7-mcp
+  content_hash: sha256:dc69335e1cd4c7f3c0fef95f8790f181a0985847277eb4418a9ec8964d719492
+  discovered_via: context7
+  marketplace_plugin_name: context7-plugin

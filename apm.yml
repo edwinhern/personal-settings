@@ -3,6 +3,6 @@ version: 1.0.0
 description: APM project for personal-settings
 author: Edwin Hernandez
 dependencies:
-  apm: []
-  mcp: []
-scripts: {}
+  apm:
+    - edwinhern/personal-settings/development
+    - edwinhern/personal-settings/business
