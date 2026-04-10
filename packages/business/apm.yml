@@ -3,6 +3,11 @@ version: 1.0.0
 description: APM project for business
 author: Edwin Hernandez
 dependencies:
-  apm: []
-  mcp: []
+  apm:
+    - webflow/webflow-skills/plugins/webflow-skills
+    - webflow/webflow-skills/plugins/webflow-code-component-skills
+    - webflow/webflow-skills/plugins/webflow-cli-skills
+    - webflow/webflow-skills/plugins/webflow-designer-tools
+  mcp: -com.webflow/mcp
+
 scripts: {}
