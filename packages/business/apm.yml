@@ -8,6 +8,7 @@ dependencies:
     - webflow/webflow-skills/plugins/webflow-code-component-skills
     - webflow/webflow-skills/plugins/webflow-cli-skills
     - webflow/webflow-skills/plugins/webflow-designer-tools
-  mcp: -com.webflow/mcp
+  mcp:
+    - com.webflow/mcp
 
 scripts: {}

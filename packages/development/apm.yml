@@ -6,4 +6,6 @@ dependencies:
   apm:
     - obra/superpowers
     - upstash/context7/plugins/claude/context7
-  mcp: []
+  mcp:
+    - io.github.upstash/context7
+    - io.github.github/github-mcp-server
