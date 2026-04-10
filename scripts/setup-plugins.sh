@@ -6,11 +6,11 @@ set -eu
 while read -r plugin url ref; do
   # Skip comments and empty lines
   case "$plugin" in
-    "#"* | "") continue ;;
+  "#"* | "") continue ;;
   esac
-  
-  printf "Adding plugin: %s from %s\n" "$plugin" "$url"
-  asdf plugin add "$plugin" "$url" || true
-done < .plugin-versions
+
+  printf "Adding plugin: %s from %s (ref: %s)\n" "$plugin" "$url" "$ref"
+  asdf plugin add "$plugin" "$url" "$ref" || true
+done <.plugin-versions
 
 printf "Plugins setup complete!\n"

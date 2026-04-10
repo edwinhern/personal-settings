@@ -6,11 +6,11 @@ runs:
   steps:
     - name: Install ASDF
       uses: asdf-vm/actions/setup@v4
-    
+
     - name: Add custom plugins
       shell: sh
       run: sh scripts/setup-plugins.sh
-    
+
     - name: Install tools
       shell: sh
       run: asdf install
