@@ -10,12 +10,20 @@ on:
 
 jobs:
   lint:
-    name: Lint shell scripts and markdown
+    name: Lint shell scripts, markdown, and YAML
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: asdf-vm/actions/install@v4
       - run: make lint
+
+  validate_apm:
+    name: Validate APM packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: asdf-vm/actions/install@v4
+      - run: make compile
 
   actions_lint:
     name: Lint GitHub Actions workflows
