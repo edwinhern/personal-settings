@@ -6,6 +6,40 @@ dependencies:
   apm:
     - obra/superpowers
     - upstash/context7/plugins/claude/context7
+    - anthropics/claude-plugins-official/external_plugins/github
+    - anthropics/claude-plugins-official/external_plugins/playwright
+    - anthropics/claude-plugins-official/plugins/code-review
+    - anthropics/claude-plugins-official/plugins/code-simplifier
+    - anthropics/claude-plugins-official/plugins/skill-creator
   mcp:
     - io.github.upstash/context7
-    - io.github.github/github-mcp-server
+    - name: io.github.github/github-mcp-server
+      env:
+        GITHUB_PERSONAL_ACCESS_TOKEN: "${input:github-token}"
+
+    - name: memory
+      registry: false
+      transport: stdio
+      command: npx
+      args: ["-y", "@modelcontextprotocol/server-memory"]
+
+    - name: sequential-thinking
+      registry: false
+      transport: stdio
+      command: npx
+      args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+
+    - name: filesystem
+      registry: false
+      transport: stdio
+      command: npx
+      args:
+        - "-y"
+        - "@modelcontextprotocol/server-filesystem"
+        - "${input:github-root-directory}"
+
+    - name: shadcn
+      registry: false
+      transport: stdio
+      command: npx
+      args: ["shadcn@latest", "mcp"]
