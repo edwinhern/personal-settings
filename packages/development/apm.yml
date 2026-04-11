@@ -12,6 +12,7 @@ dependencies:
     - anthropics/claude-plugins-official/plugins/code-simplifier
     - anthropics/claude-plugins-official/plugins/skill-creator
   mcp:
+    - microsoft/playwright-mcp
     - io.github.upstash/context7
     - name: io.github.github/github-mcp-server
       env:
