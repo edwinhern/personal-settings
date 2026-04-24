@@ -1,1 +1,25 @@
-{}
+{
+  "explorer.compactFolders": false,
+  "symbols.hidesExplorerArrows": false,
+  "workbench.sideBar.location": "right",
+  "workbench.colorTheme": "Vesper",
+  "workbench.iconTheme": "symbols",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "terminal.explorerKind": "external",
+  "terminal.external.osxExec": "iTerm.app",
+  "editor.lineHeight": 0,
+  "editor.fontSize": 14,
+  "editor.cursorBlinking": "solid",
+  "editor.detectIndentation": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.fontFamily": "'Monaspace Neon', monospace",
+  "editor.linkedEditing": true,
+  "editor.minimap.enabled": false,
+  "git.confirmSync": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "chat.viewSessions.orientation": "stacked",
+  "chat.agent.enabled": false,
+  "chat.disableAIFeatures": false,
+  "claudeCode.preferredLocation": "sidebar"
+}
