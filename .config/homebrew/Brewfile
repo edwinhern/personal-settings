@@ -1,0 +1,11 @@
+# Homebrew Bundle — apps and CLIs installed via `brew bundle --file=.config/homebrew/Brewfile`
+
+# Taps
+# tap "homebrew/cask"
+
+# CLIs
+brew "asdf"
+brew "git"
+
+# Casks
+# cask "visual-studio-code"
