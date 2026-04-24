@@ -4,11 +4,13 @@ set -eu
 
 printf "* %s\n\n" "Formatting shell scripts..."
 
-# format Shell scripts in scripts/ directory.
-shfmt --language-dialect posix --find \
-  ./scripts/*
-shfmt --language-dialect posix --indent 2 --write \
-  ./scripts/*
+# Collect shell targets from scripts/ and .config/zsh/
+SH_TARGETS=$(find scripts .config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
+
+# shellcheck disable=SC2086
+shfmt --language-dialect bash --find ${SH_TARGETS}
+# shellcheck disable=SC2086
+shfmt --language-dialect bash --indent 2 --write ${SH_TARGETS}
 
 printf "\n* %s\n\n" "Formatting markdown and YAML..."
 
