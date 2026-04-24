@@ -1,11 +1,25 @@
-# Homebrew Bundle — apps and CLIs installed via `brew bundle --file=.config/homebrew/Brewfile`
-
-# Taps
-# tap "homebrew/cask"
-
-# CLIs
 brew "asdf"
-brew "git"
-
-# Casks
-# cask "visual-studio-code"
+brew "tmux"
+cask "font-monaspace"
+cask "iterm2"
+cask "visual-studio-code"
+vscode "adpyke.codesnap"
+vscode "alefragnani.project-manager"
+vscode "anthropic.claude-code"
+vscode "bradlc.vscode-tailwindcss"
+vscode "csstools.postcss"
+vscode "edwinhuish.better-comments-next"
+vscode "esbenp.prettier-vscode"
+vscode "fosshaas.fontsize-shortcuts"
+vscode "github.copilot-chat"
+vscode "james-yu.latex-workshop"
+vscode "mathematic.vscode-latex"
+vscode "miguelsolorio.symbols"
+vscode "raunofreiberg.vesper"
+vscode "shd101wyy.markdown-preview-enhanced"
+vscode "tomoki1207.pdf"
+vscode "usernamehw.errorlens"
+vscode "waderyan.gitblame"
+vscode "wholroyd.jinja"
+vscode "yoavbls.pretty-ts-errors"
+vscode "yzhang.markdown-all-in-one"

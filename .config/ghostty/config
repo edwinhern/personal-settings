@@ -1,0 +1,12 @@
+# code ~/Library/Application\ Support/com.mitchellh.ghostty/config
+
+theme = "Vesper"
+
+background-opacity = 0.9
+background-blur-radius = 20
+background = #031219
+
+font-family = "Monaspace Neon"
+
+cursor-style = bar
+cursor-style-blink = false

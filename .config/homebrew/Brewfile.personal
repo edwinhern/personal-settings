@@ -1,0 +1,13 @@
+brew "mas"
+
+cask "aldente"
+cask "brave-browser"
+cask "claude-code"
+cask "cleanshot"
+cask "discord"
+cask "displaylink"
+cask "microsoft-excel"
+cask "raycast"
+cask "rectangle"
+cask "superwhisper"
+cask "synology-drive"
