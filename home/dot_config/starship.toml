@@ -1,0 +1,40 @@
+# https://starship.rs/config/
+# Minimal prompt: directory + git status + command duration on the right.
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$character"""
+
+right_format = """
+$cmd_duration\
+$time"""
+
+add_newline = false
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "yellow"
+
+[cmd_duration]
+min_time = 2_000
+style = "dimmed yellow"
+
+[time]
+disabled = false
+format = "[$time]($style)"
+style = "dimmed white"
+time_format = "%H:%M"
