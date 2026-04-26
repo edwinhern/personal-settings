@@ -16,10 +16,12 @@ window-padding-y = 10
 window-save-state = always
 
 cursor-style = bar
-cursor-style-blink = false 
+cursor-style-blink = false
 
 copy-on-select = true
 macos-titlebar-style = transparent
+macos-option-as-alt = true
 mouse-scroll-multiplier = 2
-# Terminal settings
+mouse-hide-while-typing = true
+shell-integration = zsh
 term = xterm-256color

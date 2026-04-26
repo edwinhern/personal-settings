@@ -1,40 +1,49 @@
-# https://starship.rs/config/
-# Minimal prompt: directory + git status + command duration on the right.
-
 format = """
 $directory\
 $git_branch\
 $git_status\
+$fill\
+$python\
+$nodejs\
+$package\
+$mise\
+$cmd_duration\
+$line_break\
 $character"""
 
-right_format = """
-$cmd_duration\
-$time"""
-
-add_newline = false
-
-[character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[➜](bold red)"
+add_newline = true
 
 [directory]
+format = '[$path ]($style)'
 truncation_length = 3
-truncate_to_repo = true
-style = "bold cyan"
+truncation_symbol = '…/'
+truncate_to_repo = false
 
 [git_branch]
-symbol = " "
-style = "bold purple"
+style = 'fg:green'
+symbol = ' '
+format = '[on](white) [$symbol$branch ]($style)'
 
 [git_status]
-style = "yellow"
+style = 'fg:green'
+format = '([$all_status$ahead_behind]($style) )'
+
+[fill]
+symbol = ' '
+
+[python]
+style = 'teal'
+symbol = ' '
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+pyenv_version_name = true
+pyenv_prefix = ''
+
+[nodejs]
+symbol = ' '
+
+[package]
+symbol = '󰏗 '
 
 [cmd_duration]
-min_time = 2_000
-style = "dimmed yellow"
-
-[time]
-disabled = false
-format = "[$time]($style)"
-style = "dimmed white"
-time_format = "%H:%M"
+min_time = 500
+format = '[$duration]($style)'
