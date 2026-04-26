@@ -1,4 +1,5 @@
 [tools]
+chezmoi = 'latest'
 node = 'lts'
 python = 'latest'
 pnpm = 'latest'
@@ -9,9 +10,17 @@ biome = 'latest'
 github-cli = 'latest'
 shellcheck = 'latest'
 shfmt = 'latest'
+tmux = 'latest'
+starship = 'latest'
+fastfetch = 'latest'
+usage = 'latest'
+{{ if eq .context "personal" -}}
 tinytex = 'latest'
 ffmpeg = 'latest'
-tmux = 'latest'
+{{- end }}
+{{- if eq .context "work" }}
+# placeholder - add work-specific tools here
+{{- end }}
 
 [settings]
 # tools can read the versions files used by other version managers

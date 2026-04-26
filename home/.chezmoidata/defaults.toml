@@ -1,0 +1,8 @@
+[git]
+name = "Edwin Hernandez"
+
+[font]
+mono = "Monaspace Argon"
+
+[editor]
+default = "nvim"

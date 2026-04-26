@@ -1,0 +1,24 @@
+[user]
+	name = {{ .git.name | quote }}
+[core]
+	excludesfile = ~/.gitignore
+	editor = {{ .editor.default }}
+	ignorecase = false
+[push]
+	default = simple
+[color]
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+	grep = auto
+	ui = auto
+[hub]
+	protocol = https
+[github]
+	user = edwinhern
+[ghq]
+	root = ~/.ghq
+{{- if eq .context "work" }}
+{{- /* placeholder - no work-specific git config yet */ -}}
+{{- end }}

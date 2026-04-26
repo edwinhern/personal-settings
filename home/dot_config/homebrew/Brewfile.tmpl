@@ -1,8 +1,19 @@
-brew "asdf"
-brew "tmux"
+# vi: ft=ruby
+# Shared (all contexts) ----------------------------------------------------
+
+# Fonts
 cask "font-monaspace"
-cask "iterm2"
+
+# Apps
+cask "brave-browser"
+cask "claude-code"
+cask "ghostty"
+cask "raycast"
+cask "rectangle"
+cask "superwhisper"
 cask "visual-studio-code"
+
+# VS Code extensions
 vscode "adpyke.codesnap"
 vscode "alefragnani.project-manager"
 vscode "anthropic.claude-code"
@@ -23,3 +34,18 @@ vscode "waderyan.gitblame"
 vscode "wholroyd.jinja"
 vscode "yoavbls.pretty-ts-errors"
 vscode "yzhang.markdown-all-in-one"
+
+{{ if eq .context "personal" -}}
+# Personal-only -----------------------------------------------------------
+brew "mas"
+cask "aldente"
+cask "cleanshot"
+cask "discord"
+cask "displaylink"
+cask "microsoft-excel"
+cask "synology-drive"
+{{- end }}
+{{ if eq .context "work" -}}
+# Work-only ---------------------------------------------------------------
+# placeholder - add work-specific casks/brews here
+{{- end }}
