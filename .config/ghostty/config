@@ -1,12 +1,25 @@
 # code ~/Library/Application\ Support/com.mitchellh.ghostty/config
 
-theme = "Vesper"
+theme = "Catppuccin Mocha"
 
-background-opacity = 0.9
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14
+
+background-opacity = 0.8
 background-blur-radius = 20
-background = #031219
 
-font-family = "Monaspace Neon"
+window-colorspace = "display-p3"
+window-decoration = true
+window-padding-balance = true
+window-padding-x = 10
+window-padding-y = 10
+window-save-state = always
 
 cursor-style = bar
-cursor-style-blink = false
+cursor-style-blink = false 
+
+copy-on-select = true
+macos-titlebar-style = transparent
+mouse-scroll-multiplier = 2
+# Terminal settings
+term = xterm-256color

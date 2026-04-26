@@ -1,0 +1,43 @@
+[tools]
+node = 'lts'
+python = 'latest'
+pnpm = 'latest'
+uv = 'latest'
+java = 'latest'
+go = 'latest'
+biome = 'latest'
+github-cli = 'latest'
+shellcheck = 'latest'
+shfmt = 'latest'
+tinytex = 'latest'
+ffmpeg = 'latest'
+tmux = 'latest'
+
+[settings]
+# tools can read the versions files used by other version managers
+# for example, .nvmrc in the case of node's nvm
+idiomatic_version_file_enable_tools = ['node']
+
+# keep downloaded archive/source files for debugging
+always_keep_download = false        # deleted after install; not a cache
+always_keep_install = false         # deleted on failure by default
+
+# configure how frequently (in minutes) to fetch updated plugin repository changes
+# this is updated whenever a new runtime is installed
+# (note: this isn't currently implemented but there are plans to add it: https://github.com/jdx/mise/discussions/6735)
+plugin_autoupdate_last_check_duration = '1 week' # set to 0 to disable updates
+
+# config files with these prefixes will be trusted by default
+trusted_config_paths = [
+    '~/Documents/github',
+]
+
+verbose = false       # set to true to see full installation output, see `MISE_VERBOSE`
+http_timeout = "30s"  # set the timeout for http requests as duration string, see `MISE_HTTP_TIMEOUT`
+jobs = 4              # number of plugins or runtimes to install in parallel. The default is `4`.
+raw = false           # set to true to directly pipe plugins to stdin/stdout/stderr
+yes = false           # set to true to automatically answer yes to all prompts
+
+not_found_auto_install = true # see MISE_NOT_FOUND_AUTO_INSTALL
+task.output = "prefix" # see Tasks Runner for more information
+paranoid = false       # see MISE_PARANOID
