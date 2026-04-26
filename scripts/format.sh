@@ -4,8 +4,8 @@ set -eu
 
 printf "* %s\n\n" "Formatting shell scripts..."
 
-# Collect shell targets from scripts/ and .config/zsh/
-SH_TARGETS=$(find scripts .config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
+# Collect shell targets from scripts/ and home/dot_config/zsh/
+SH_TARGETS=$(find scripts home/dot_config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
 
 # shellcheck disable=SC2086
 shfmt --language-dialect bash --find ${SH_TARGETS}
