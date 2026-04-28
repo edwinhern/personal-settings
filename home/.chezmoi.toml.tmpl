@@ -1,3 +1,5 @@
 {{- $context := promptChoiceOnce . "context" "Which context is this machine?" (list "personal" "work") -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
 [data]
 context = {{ $context | quote }}
+email = {{ $email | quote }}

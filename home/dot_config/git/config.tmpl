@@ -1,5 +1,6 @@
 [user]
 	name = {{ .git.name | quote }}
+	email = {{ .email | quote }}
 [core]
 	excludesfile = ~/.gitignore
 	editor = {{ .editor.default }}
