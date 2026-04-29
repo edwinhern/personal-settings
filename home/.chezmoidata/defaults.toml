@@ -5,4 +5,4 @@ name = "Edwin Hernandez"
 mono = "Monaspace Argon"
 
 [editor]
-default = "nvim"
+default = "nano"

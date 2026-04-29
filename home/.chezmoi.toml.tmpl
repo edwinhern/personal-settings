@@ -2,10 +2,12 @@
      a keypair (see README "Encrypted personal secrets" section).
      Empty string disables encryption (chezmoi works without it).
      Safe to commit: public keys are public. */}}
-{{- $ageRecipient := "" -}}
+{{- $ageRecipient := "age1mqh9ynwrkem0kjcd5ds4wzknjhmw75dnu8cnfnxdz3hqstche97s7htkt0" -}}
 {{- $context := promptChoiceOnce . "context" "Which context is this machine?" (list "personal" "work") -}}
 {{- $email := promptStringOnce . "email" "Git email address" -}}
+sourceDir = {{ joinPath .chezmoi.homeDir "Documents/github/dotfiles-public" | quote }}
 {{- if and (eq $context "personal") (ne $ageRecipient "") }}
+
 encryption = "age"
 
 [age]
