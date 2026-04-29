@@ -9,3 +9,15 @@ lint:
 compile:
 	sh scripts/compile.sh
 .PHONY: compile
+
+install:
+	bash scripts/install.sh
+.PHONY: install
+
+apply:
+	chezmoi apply --source "$(CURDIR)"
+.PHONY: apply
+
+diff:
+	chezmoi diff --source "$(CURDIR)"
+.PHONY: diff

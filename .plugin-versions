@@ -1,4 +1,0 @@
-# plugin-name  git-url                                               git-ref (hash, tag, or branch)
-apm https://github.com/edwinhern/asdf-apm main
-shellcheck https://github.com/luizm/asdf-shellcheck.git main
-shfmt https://github.com/luizm/asdf-shfmt.git master

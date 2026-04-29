@@ -1,0 +1,11 @@
+[
+  {
+    "key": "cmd+t",
+    "command": "workbench.action.terminal.toggleTerminal",
+    "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+  },
+  {
+    "key": "cmd+l",
+    "command": "claude-vscode.sidebar.open"
+  }
+]

@@ -1,0 +1,27 @@
+# code ~/Library/Application\ Support/com.mitchellh.ghostty/config
+
+theme = "Catppuccin Mocha"
+
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14
+
+background-opacity = 0.8
+background-blur-radius = 20
+
+window-colorspace = "display-p3"
+window-decoration = true
+window-padding-balance = true
+window-padding-x = 10
+window-padding-y = 10
+window-save-state = always
+
+cursor-style = bar
+cursor-style-blink = false
+
+copy-on-select = true
+macos-titlebar-style = transparent
+macos-option-as-alt = true
+mouse-scroll-multiplier = 2
+mouse-hide-while-typing = true
+shell-integration = zsh
+term = xterm-256color
