@@ -1,0 +1,16 @@
+#!/bin/sh
+# Personal-only: decrypts the age private key on first apply.
+# Defense-in-depth: .chezmoiignore.tmpl already excludes this script on
+# non-personal contexts, but we also short-circuit here.
+{{- if ne .context "personal" }}
+exit 0
+{{- end }}
+
+if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
+  mkdir -p "${HOME}/.config/chezmoi"
+  chezmoi age decrypt \
+    --output "${HOME}/.config/chezmoi/key.txt" \
+    --passphrase \
+    "{{ .chezmoi.sourceDir }}/key.txt.age"
+  chmod 600 "${HOME}/.config/chezmoi/key.txt"
+fi

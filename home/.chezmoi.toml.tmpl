@@ -1,5 +1,18 @@
+{{/* age recipient public key. Paste the public key here after generating
+     a keypair (see README "Encrypted personal secrets" section).
+     Empty string disables encryption (chezmoi works without it).
+     Safe to commit: public keys are public. */}}
+{{- $ageRecipient := "" -}}
 {{- $context := promptChoiceOnce . "context" "Which context is this machine?" (list "personal" "work") -}}
 {{- $email := promptStringOnce . "email" "Git email address" -}}
+{{- if and (eq $context "personal") (ne $ageRecipient "") }}
+encryption = "age"
+
+[age]
+identity = "~/.config/chezmoi/key.txt"
+recipient = {{ $ageRecipient | quote }}
+{{- end }}
+
 [data]
 context = {{ $context | quote }}
 email = {{ $email | quote }}
