@@ -3,7 +3,7 @@
 set -eu
 
 # check format Markdown and YAML files.
-npx -y prettier --check --ignore-unknown \
+mise exec -- prettier --check --ignore-unknown \
   "**/*.md" \
   "**/*.yml"
 

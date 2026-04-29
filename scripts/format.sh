@@ -15,7 +15,7 @@ mise exec -- shfmt --language-dialect bash --indent 2 --write ${SH_TARGETS}
 printf "\n* %s\n\n" "Formatting markdown and YAML..."
 
 # format Markdown and YAML files.
-npx -y prettier --write --ignore-unknown \
+mise exec -- prettier --write --ignore-unknown \
   "**/*.md" \
   "**/*.yml"
 
