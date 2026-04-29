@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# macOS build version: {{ output "sw_vers" "--buildVersion" }}
+# Re-runs after every macOS update; safe to leave empty until you have defaults to write.
+
+set -euo pipefail
+
+echo "macOS build {{ output "sw_vers" "--buildVersion" }} — no defaults configured yet"
