@@ -14,10 +14,17 @@ SH_TARGETS=$(find scripts home/dot_config/zsh -type f \( -name '*.sh' -o -name '
 
 # check format Shell scripts (bash dialect covers posix + zsh constructs).
 # shellcheck disable=SC2086
-shfmt --language-dialect bash --indent 2 --diff ${SH_TARGETS}
+mise exec -- shfmt --language-dialect bash --indent 2 --diff ${SH_TARGETS}
 
 # lint for errors in Shell scripts.
 # shellcheck disable=SC2086
-shellcheck --shell bash --external-sources ${SH_TARGETS}
+mise exec -- shellcheck --shell bash --external-sources ${SH_TARGETS}
+
+printf "* %s\n" "Checking TOML formatting..."
+
+# check TOML formatting (skip *.tmpl — chezmoi templates contain Go template syntax).
+TOML_TARGETS=$(find . -name '*.toml' -not -name '*.tmpl' -not -path './.git/*')
+# shellcheck disable=SC2086
+mise exec -- taplo fmt --check ${TOML_TARGETS}
 
 printf "* %s\n" "All linting complete!"
