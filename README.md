@@ -33,36 +33,44 @@ make compile           # validate APM packages
 
 **Personal machines only.** The repo is public, so secrets travel age-encrypted with a passphrase-protected private key. Work machines opt out entirely (see below).
 
-**One-time setup** (do this on your primary personal Mac, from the repo root):
+**One-time setup** (run from the repo root — `cd` in first):
+
+The piped form `chezmoi age-keygen | chezmoi age encrypt --passphrase --output=...` hides the public-key line on some chezmoi versions, leaving you with no recipient to paste. Use the two-step form below instead — it keeps the public key visible.
 
 ```sh
-REPO=~/Documents/github/dotfiles-public
+# 1. Generate keypair to a plaintext temp file (so the public key is visible).
+TMPKEY=$(mktemp -t agekey-XXXXX)
+chezmoi age-keygen --output="$TMPKEY"
 
-# 1. Generate keypair, passphrase-encrypt the private key into the repo's source.
-chezmoi age-keygen | chezmoi age encrypt --passphrase \
-  --output="$REPO/home/key.txt.age"
-# → prints "Public key: age1xxx..." Copy it.
-# → prompts for passphrase twice. Save in Password manager.
+# 2. Show the public key — the line starting "# public key:". Copy it.
+grep '^# public key:' "$TMPKEY"
+#  → e.g.  # public key: age1xxxxx...
 
-# 2. Open home/.chezmoi.toml.tmpl. Replace the empty recipient with your key:
+# 3. Encrypt the keypair file with a passphrase, save into the repo.
+chezmoi age encrypt --passphrase --output=home/key.txt.age "$TMPKEY"
+
+# 4. Shred the plaintext intermediate.
+rm -P "$TMPKEY" 2>/dev/null || rm -f "$TMPKEY"
+
+# 5. Open home/.chezmoi.toml.tmpl. Replace the empty recipient with your key:
 #       {{- $ageRecipient := "age1xxx..." -}}
 
-# 3. Re-init chezmoi config so it picks up sourceDir + encryption block.
-chezmoi init --prompt
+# 6. Re-init so chezmoi.toml picks up sourceDir + the encryption block.
+#    --source is required on this first run only; afterwards sourceDir is
+#    baked into ~/.config/chezmoi/chezmoi.toml.
+chezmoi init --prompt --source "$(pwd)"
 
-# 4. Author the encrypted secrets file directly — no plaintext on disk.
+# 7. Author the encrypted secrets file directly — no plaintext on disk.
 TMP=$(mktemp -t secrets-XXXXX)
-trap 'rm -P "$TMP" 2>/dev/null || rm -f "$TMP"' EXIT
-$EDITOR "$TMP"        # paste: export GITHUB_PERSONAL_ACCESS_TOKEN="...", etc.
-chezmoi encrypt --output \
-  "$REPO/home/encrypted_private_dot_secrets.local.age" "$TMP"
+nano "$TMP"        # paste: export GITHUB_PERSONAL_ACCESS_TOKEN="...", etc.
+chezmoi encrypt --output home/encrypted_private_dot_secrets.local.age "$TMP"
+rm -P "$TMP" 2>/dev/null || rm -f "$TMP"
 
-# 5. Apply — decrypts to ~/.secrets.local automatically.
+# 8. Apply — prompts for passphrase once, then materializes ~/.secrets.local.
 chezmoi apply
 cat ~/.secrets.local  # sanity check
 
-# 6. Commit and push.
-cd "$REPO"
+# 9. Commit and push.
 git add home/key.txt.age home/encrypted_private_dot_secrets.local.age home/.chezmoi.toml.tmpl
 git commit -m "feat: enable age-encrypted personal secrets"
 ```
