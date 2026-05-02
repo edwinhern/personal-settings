@@ -4,9 +4,9 @@ set -eu
 
 printf "* %s\n\n" "Compiling APM packages..."
 
-# Find all directories in packages/ that contain apm.yml
+# Find all directories in packages/ that contain apm.yaml
 for package_dir in packages/*/; do
-  if [ -f "${package_dir}apm.yml" ]; then
+  if [ -f "${package_dir}apm.yaml" ]; then
     package_name=$(basename "$package_dir")
     printf "Compiling package: %s\n" "$package_name"
 

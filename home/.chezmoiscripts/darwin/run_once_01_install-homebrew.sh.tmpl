@@ -1,0 +1,22 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/bin/bash
+# .chezmoiscripts/darwin/run_once_01_install-homebrew.sh.tmpl
+# Installs Homebrew if not present. Runs exactly once per machine.
+set -euo pipefail
+
+if command -v brew &>/dev/null; then
+  echo "Homebrew already installed, skipping."
+  exit 0
+fi
+
+echo "Installing Homebrew..."
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Activate brew in current shell (Apple Silicon path)
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+echo "Homebrew installed."
+{{- end }}

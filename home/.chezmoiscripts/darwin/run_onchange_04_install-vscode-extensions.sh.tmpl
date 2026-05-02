@@ -1,0 +1,42 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/bin/bash
+# .chezmoiscripts/darwin/run_onchange_04_install-vscode-extensions.sh.tmpl
+# Installs VS Code extensions from packages.yaml vscode section.
+# Reruns automatically whenever packages.yaml changes.
+#
+# packages.yaml hash: {{ include ".chezmoidata/extensions.yaml" | sha256sum }}
+set -euo pipefail
+
+if ! command -v code &>/dev/null; then
+  echo "VS Code CLI not found — open VS Code and run: Shell Command: Install 'code' command in PATH"
+  exit 0
+fi
+
+echo "Installing VS Code extensions..."
+
+extensions=(
+  # shared
+  {{ range .vscode.shared -}}
+  "{{ . }}"
+  {{ end }}
+  {{ if .personal -}}
+  # personal
+  {{ range .vscode.personal -}}
+  "{{ . }}"
+  {{ end -}}
+  {{- end }}
+  {{ if .work -}}
+  # work
+  {{ range .vscode.work -}}
+  "{{ . }}"
+  {{ end -}}
+  {{- end }}
+)
+
+for ext in "${extensions[@]}"; do
+  [[ -n "$ext" ]] && code --install-extension "$ext" --force
+done
+
+echo "VS Code extensions installed."
+{{- end }}

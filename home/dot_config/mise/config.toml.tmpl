@@ -1,23 +1,16 @@
 [tools]
-chezmoi = 'latest'
-node = 'lts'
-python = 'latest'
-github-cli = 'latest'
-tmux = 'latest'
-starship = 'latest'
-fastfetch = 'latest'
-{{ if eq .context "personal" -}}
-pnpm = 'latest'
-uv = 'latest'
-biome = 'latest'
+node   = "lts"
+pnpm = "latest"
+python = "latest"
+
+{{ if .personal -}}
+biome = "latest"
+uv   = "latest"
 {{- end }}
-{{- if eq .context "work" }}
-# placeholder - add work-specific tools here
+
+{{ if .work -}}
+redis = "latest"
 {{- end }}
 
 [settings]
-# tools can read the versions files used by other version managers
-idiomatic_version_file_enable_tools = ['node', 'python', 'pnpm']
-
-# config files with these prefixes will be trusted by default
-trusted_config_paths = ['~/Documents/github']
+idiomatic_version_file_enable_tools = ["node", "python", "pnpm"]

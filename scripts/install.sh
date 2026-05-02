@@ -1,47 +1,32 @@
-#!/usr/bin/env bash
-# Bootstrap a fresh macOS machine from this dotfiles repo.
-# Order: brew -> mise -> chezmoi (via mise) -> chezmoi apply -> mise install -> brew bundle.
-# Idempotent: safe to re-run.
+#!/usr/bin/env sh
+# install.sh
+# Bootstrap script for a fresh macOS machine.
+# Installs Chezmoi if absent, then hands off to chezmoi init --apply.
+# Chezmoi run_once_ and run_onchange_ scripts handle everything from there.
+#
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/edwinhern/dotfiles/main/scripts/install.sh | sh
+#   — or —
+#   ./scripts/install.sh  (from a local clone)
 
-set -euo pipefail
+set -e
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ ! "$(command -v chezmoi)" ]; then
+  bin_dir="$HOME/.local/bin"
+  chezmoi="$bin_dir/chezmoi"
 
-step() {
-  printf "\n==> %s\n" "$*"
-}
-
-# 1. Homebrew --------------------------------------------------------------
-if ! command -v brew >/dev/null 2>&1; then
-  step "Installing Homebrew"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if [ "$(command -v curl)" ]; then
+    sh -c "$(curl -fsSL https://get.chezmoi.io)" -- -b "$bin_dir"
+  elif [ "$(command -v wget)" ]; then
+    sh -c "$(wget -qO- https://get.chezmoi.io)" -- -b "$bin_dir"
+  else
+    echo "To install chezmoi, you must have curl or wget installed." >&2
+    exit 1
+  fi
+else
+  chezmoi=chezmoi
 fi
 
-# Ensure brew is on PATH for this shell (Apple Silicon path).
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x /usr/local/bin/brew ]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-fi
-
-# 2. mise ------------------------------------------------------------------
-if ! command -v mise >/dev/null 2>&1; then
-  step "Installing mise"
-  brew install mise
-fi
-
-eval "$(mise activate bash --shims)"
-
-# 3. chezmoi (ephemeral via mise; the managed config will pin it after apply)
-step "Running chezmoi init --apply (will prompt for context on first run)"
-mise x chezmoi@latest -- chezmoi init --apply --source "${REPO_ROOT}"
-
-# 4. mise install ----------------------------------------------------------
-step "Installing mise-managed runtimes"
-mise install
-
-# 5. brew bundle -----------------------------------------------------------
-step "Installing apps via brew bundle"
-brew bundle --file="${HOME}/.config/homebrew/Brewfile"
-
-step "Done. Open a new shell to pick up ZDOTDIR/PATH changes."
+# init + apply in one shot.
+# Chezmoi will prompt for git.name, git.email, and context if hostname is unrecognized.
+exec "$chezmoi" init --apply "gh:edwinhern/dotfiles"

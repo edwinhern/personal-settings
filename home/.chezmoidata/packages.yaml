@@ -1,0 +1,41 @@
+# packages.yaml
+# Single source of truth for all package manager declarations.
+# Referenced by run_onchange_ scripts via Chezmoi template data (.packages.*).
+
+packages:
+  darwin:
+    homebrew:
+      shared:
+        formulas:
+          - fastfetch
+          - gh
+          - mise
+          - starship
+          - tmux
+        casks:
+          # fonts
+          - font-monaspace
+          - font-jetbrains-mono-nerd-font
+          # apps
+          - brave-browser
+          - ghostty
+          - raycast
+          - rectangle
+          - superwhisper
+          - visual-studio-code
+
+      personal:
+        formulas:
+          - mas # Mac App Store CLI
+        casks:
+          - aldente
+          - claude-code
+          - cleanshot
+          - discord
+          - displaylink
+          - microsoft-excel
+          - synology-drive
+
+      work:
+        formulas: []
+        casks: []

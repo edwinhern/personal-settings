@@ -1,0 +1,20 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/bin/bash
+# .chezmoiscripts/darwin/run_onchange_03_install-mise-tools.sh.tmpl
+# Runs `mise install` to sync tools declared in ~/.config/mise/config.toml.
+# Reruns automatically whenever the mise config template changes.
+#
+# mise config hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+set -euo pipefail
+
+if ! command -v mise &>/dev/null; then
+  echo "mise not found — ensure run_onchange_02_install-packages ran successfully."
+  exit 1
+fi
+
+echo "Installing mise tools..."
+mise install --yes
+
+echo "Mise tools installed."
+{{- end }}
