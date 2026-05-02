@@ -1,13 +1,11 @@
-# dotfiles-public
+# github.com/edwinhern/dotfiles
 
-Personal macOS dotfiles, managed by [chezmoi](https://www.chezmoi.io/). Hostname-aware **personal** / **work** context with a one-time prompt fallback for unknown machines.
+Edwin's dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 
-## Install
+Install them with:
 
-```sh
-git clone https://github.com/edwinhern/dotfiles-public.git ~/Documents/github/dotfiles-public
-cd ~/Documents/github/dotfiles-public
-make install
+```console
+$ chezmoi init edwinhern
 ```
 
 `make install` is idempotent. It runs `scripts/install.sh`, which installs `chezmoi` via `https://get.chezmoi.io` if absent, then hands off to `chezmoi init --apply gh:edwinhern/dotfiles`. From there, `home/.chezmoiscripts/darwin/run_once_*` and `run_onchange_*` scripts install Homebrew, run `brew bundle`, run `mise install`, and install VS Code extensions.
@@ -28,21 +26,3 @@ make compile           # validate APM packages
 ```
 
 `chezmoi re-add` is the most underrated command — it closes the loop when apps (Karabiner, VS Code, etc.) rewrite their own config files in place.
-
-## Machine context
-
-Known machines auto-classify by `LocalHostName` (`scutil --get LocalHostName` on darwin) — `edwinhern-personal-mac` is recognized as personal. Unknown hosts get a one-time prompt cached in `~/.config/chezmoi/chezmoi.toml`, never the repo. The prompt echoes the detected hostname, so onboarding a new machine never requires running `scutil` manually.
-
-- Onboard another known personal machine: add an `else if eq $hostname "..."` branch in `home/.chezmoi.yaml.tmpl`. Look up the current hostname any time with `chezmoi data --format=json | jq -r .hostname`.
-- Git name and email are prompted once per machine and cached locally — they never enter this public repo.
-- The work hostname is intentionally not hardcoded; work machines fall through to the prompt.
-
-## Local secrets
-
-Secrets stay out of the repo. Each machine maintains its own `~/.secrets.local` (e.g. `export GITHUB_PERSONAL_ACCESS_TOKEN="…"`), and zsh sources it on shell start via the `[[ -f ~/.secrets.local ]] && source ~/.secrets.local` line in `home/dot_config/zsh/exports.zsh`. Never commit this file.
-
-## References
-
-- [chezmoi](https://www.chezmoi.io/) — dotfile manager
-- [chezmoi macOS guide](https://www.chezmoi.io/user-guide/machines/macos/) — `sw_vers` + `defaults write` patterns
-- [mise](https://mise.jdx.dev/) — runtime version manager
