@@ -31,9 +31,9 @@ make compile           # validate APM packages
 
 ## Machine context
 
-Known machines auto-classify by `LocalHostName` (`scutil --get LocalHostName` on darwin) — `Edwins-MacBook-Pro` is recognized as personal. Unknown hosts get a one-time prompt cached in `~/.config/chezmoi/chezmoi.toml`, never the repo. The prompt echoes the detected hostname, so onboarding a new machine never requires running `scutil` manually.
+Known machines auto-classify by `LocalHostName` (`scutil --get LocalHostName` on darwin) — `edwinhern-personal-mac` is recognized as personal. Unknown hosts get a one-time prompt cached in `~/.config/chezmoi/chezmoi.toml`, never the repo. The prompt echoes the detected hostname, so onboarding a new machine never requires running `scutil` manually.
 
-- Onboard another known personal machine: add an `else if eq $hostname "..."` branch in `home/.chezmoi.toml.tmpl`. Look up the current hostname any time with `chezmoi data --format=json | jq -r .hostname`.
+- Onboard another known personal machine: add an `else if eq $hostname "..."` branch in `home/.chezmoi.yaml.tmpl`. Look up the current hostname any time with `chezmoi data --format=json | jq -r .hostname`.
 - Git name and email are prompted once per machine and cached locally — they never enter this public repo.
 - The work hostname is intentionally not hardcoded; work machines fall through to the prompt.
 

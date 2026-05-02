@@ -40,16 +40,6 @@ packages:
         formulas: []
         casks: []
 
-  windows:
-    winget:
-      shared:
-        - Brave.Brave
-        - Discord.Discord
-        - Microsoft.VisualStudioCode
-        - Valve.Steam
-      personal: []
-      work: []
-
   vscode:
     shared:
       # core
