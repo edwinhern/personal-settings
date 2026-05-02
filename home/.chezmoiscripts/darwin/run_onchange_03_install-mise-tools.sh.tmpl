@@ -5,7 +5,7 @@
 # Runs `mise install` to sync tools declared in ~/.config/mise/config.toml.
 # Reruns automatically whenever the mise config template changes.
 #
-# mise config hash: {{ include "private_dot_config/mise/config.toml.tmpl" | sha256sum }}
+# mise config hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
 set -euo pipefail
 
 if ! command -v mise &>/dev/null; then

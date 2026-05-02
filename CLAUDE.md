@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 ## Repository Context
 
@@ -9,7 +9,7 @@
 
 ## Response Rule
 
-- After reading this `AGENTS.md`, say: `🤖 I read the AGENTS.md for shunk031/dotfiles.`
+- After reading this `CLAUDE.md`, say: `🤖 I read the CLAUDE.md for edwinhern/dotfiles-public.`
 
 ## Comment Policy
 
@@ -22,8 +22,3 @@
 - Only prioritize the current branch or worktree when the user explicitly asks you to work there.
 - After pushing to GitHub, always check the GitHub Actions CI results. If CI fails, investigate the failure, fix the issue, push again, and repeat until all CI checks pass.
 - Always write pull request titles and descriptions in English.
-
-## Test Policy
-
-- Do not run `bats` tests locally.
-- When you need to validate `bats` results, push to GitHub, let GitHub Actions CI run, and check the results there.

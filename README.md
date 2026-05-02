@@ -10,9 +10,9 @@ cd ~/Documents/github/dotfiles-public
 make install
 ```
 
-`make install` is idempotent. It installs Homebrew → `brew install mise` → uses `mise x chezmoi` ephemerally to run `chezmoi init --apply` → renders templates → `mise install` → `brew bundle`.
+`make install` is idempotent. It runs `scripts/install.sh`, which installs `chezmoi` via `https://get.chezmoi.io` if absent, then hands off to `chezmoi init --apply gh:edwinhern/dotfiles`. From there, `home/.chezmoiscripts/darwin/run_once_*` and `run_onchange_*` scripts install Homebrew, run `brew bundle`, run `mise install`, and install VS Code extensions.
 
-After the first apply, `chezmoi apply` is self-completing: editing `Brewfile.tmpl` triggers `brew bundle` automatically, editing `mise/config.toml.tmpl` triggers `mise install`, and a macOS update triggers any `defaults write` commands you've added (see `home/run_onchange_after_*.sh.tmpl`).
+After the first apply, `chezmoi apply` is self-completing: editing `home/.chezmoidata/packages.yaml` triggers `brew bundle` and the VS Code extension sync, and editing `home/dot_config/mise/config.toml.tmpl` triggers `mise install`. Each `run_onchange_*` script embeds a `sha256sum` of the file it watches, so chezmoi reruns it whenever that hash changes.
 
 ## Common commands
 
@@ -87,7 +87,7 @@ git commit -m "feat: enable age-encrypted personal secrets"
 
 ## Work machine secrets
 
-**Maintain `~/.secrets.local` by hand on the work machine.** Never commit it. The repo's encrypted personal blob is ignored on work via `home/.chezmoiignore.tmpl`, so the work machine never sees personal tokens. zsh's existing `[[ -f ~/.secrets.local ]] && source ~/.secrets.local` line picks up whatever you put there.
+**Maintain `~/.secrets.local` by hand on the work machine.** Never commit it. The work context never decrypts the repo's encrypted personal blob (no private key is materialized), so the work machine never sees personal tokens. zsh's existing `[[ -f ~/.secrets.local ]] && source ~/.secrets.local` line picks up whatever you put there.
 
 ## References
 
