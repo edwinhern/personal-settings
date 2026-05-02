@@ -5,7 +5,8 @@ set -eu
 # check format Markdown and YAML files.
 mise exec -- prettier --check --ignore-unknown \
   "**/*.md" \
-  "**/*.yml"
+  "**/*.yml" \
+  "**/*.yaml"
 
 printf "* %s\n" "Linting shell scripts..."
 

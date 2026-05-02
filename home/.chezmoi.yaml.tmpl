@@ -16,7 +16,7 @@
 {{- end -}}
 
 {{/*  machine detection  */}}
-{{- if or (eq $hostname "edwinhern-personal-mac") (eq $hostname "edwinhern-personal-windows") -}}
+{{- if eq $hostname "edwinhern-personal-mac" -}}
 {{-   $personal = true -}}
 {{- else if eq $hostname "edwinhern-work-mac" -}}
 {{-   $work = true -}}
@@ -37,9 +37,3 @@ data:
     git:
         name:  {{ promptStringOnce . "git.name"  "Git display name"  | quote }}
         email: {{ promptStringOnce . "git.email" "Git email address" | quote }}
-
-    font:
-        mono: "Monaspace Argon"
-
-    editor:
-        default: "nano"
