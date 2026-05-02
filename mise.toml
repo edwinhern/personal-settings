@@ -1,4 +1,5 @@
 [tools]
+chezmoi = "2.0.0"
 apm = "0.8.11"
 prettier = "3.8.3"
 shellcheck = "0.11.0"
