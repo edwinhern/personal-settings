@@ -16,8 +16,6 @@ fi
 echo "Running brew bundle..."
 
 brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
-tap "homebrew/cask-fonts"
-
 # shared formulas and casks
 {{ range .packages.darwin.homebrew.shared.formulas -}}
 brew "{{ . }}"

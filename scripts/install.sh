@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # install.sh
 # Bootstrap script for a fresh macOS machine.
 # Installs Chezmoi if absent, then hands off to chezmoi init --apply.
