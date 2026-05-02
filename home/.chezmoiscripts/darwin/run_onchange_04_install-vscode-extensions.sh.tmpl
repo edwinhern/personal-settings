@@ -5,7 +5,7 @@
 # Installs VS Code extensions from packages.yaml vscode section.
 # Reruns automatically whenever packages.yaml changes.
 #
-# packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
+# packages.yaml hash: {{ include ".chezmoidata/extensions.yaml" | sha256sum }}
 set -euo pipefail
 
 if ! command -v code &>/dev/null; then
@@ -17,18 +17,18 @@ echo "Installing VS Code extensions..."
 
 extensions=(
   # shared
-  {{ range .packages.vscode.shared -}}
+  {{ range .vscode.shared -}}
   "{{ . }}"
   {{ end }}
   {{ if .personal -}}
   # personal
-  {{ range .packages.vscode.personal -}}
+  {{ range .vscode.personal -}}
   "{{ . }}"
   {{ end -}}
   {{- end }}
   {{ if .work -}}
   # work
-  {{ range .packages.vscode.work -}}
+  {{ range .vscode.work -}}
   "{{ . }}"
   {{ end -}}
   {{- end }}
