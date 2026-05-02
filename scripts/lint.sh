@@ -9,8 +9,8 @@ mise exec -- prettier --check --ignore-unknown \
 
 printf "* %s\n" "Linting shell scripts..."
 
-# Collect shell targets from scripts/ and home/private_dot_config/zsh/
-SH_TARGETS=$(find scripts home/private_dot_config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
+# Collect shell targets from scripts/ and home/dot_config/zsh/
+SH_TARGETS=$(find scripts home/dot_config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
 
 # check format Shell scripts (bash dialect covers posix + zsh constructs).
 # shellcheck disable=SC2086
