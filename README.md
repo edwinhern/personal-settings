@@ -37,61 +37,12 @@ Known machines auto-classify by `LocalHostName` (`scutil --get LocalHostName` on
 - Git name and email are prompted once per machine and cached locally — they never enter this public repo.
 - The work hostname is intentionally not hardcoded; work machines fall through to the prompt.
 
-## Encrypted personal secrets
+## Local secrets
 
-**Personal machines only.** The repo is public, so secrets travel age-encrypted with a passphrase-protected private key. Work machines opt out entirely (see below).
-
-**One-time setup** (run from the repo root — `cd` in first):
-
-The piped form `chezmoi age-keygen | chezmoi age encrypt --passphrase --output=...` hides the public-key line on some chezmoi versions, leaving you with no recipient to paste. Use the two-step form below instead — it keeps the public key visible.
-
-```sh
-# 1. Generate keypair to a plaintext temp file (so the public key is visible).
-TMPKEY=$(mktemp -t agekey-XXXXX)
-chezmoi age-keygen --output="$TMPKEY"
-
-# 2. Show the public key — the line starting "# public key:". Copy it.
-grep '^# public key:' "$TMPKEY"
-#  → e.g.  # public key: age1xxxxx...
-
-# 3. Encrypt the keypair file with a passphrase, save into the repo.
-chezmoi age encrypt --passphrase --output=home/key.txt.age "$TMPKEY"
-
-# 4. Shred the plaintext intermediate.
-rm -P "$TMPKEY" 2>/dev/null || rm -f "$TMPKEY"
-
-# 5. Open home/.chezmoi.toml.tmpl. Replace the empty recipient with your key:
-#       {{- $ageRecipient := "age1xxx..." -}}
-
-# 6. Re-init so chezmoi.toml picks up sourceDir + the encryption block.
-#    --source is required on this first run only; afterwards sourceDir is
-#    baked into ~/.config/chezmoi/chezmoi.toml.
-chezmoi init --prompt --source "$(pwd)"
-
-# 7. Author the encrypted secrets file directly — no plaintext on disk.
-TMP=$(mktemp -t secrets-XXXXX)
-nano "$TMP"        # paste: export GITHUB_PERSONAL_ACCESS_TOKEN="...", etc.
-chezmoi encrypt --output home/encrypted_private_dot_secrets.local.age "$TMP"
-rm -P "$TMP" 2>/dev/null || rm -f "$TMP"
-
-# 8. Apply — prompts for passphrase once, then materializes ~/.secrets.local.
-chezmoi apply
-cat ~/.secrets.local  # sanity check
-
-# 9. Commit and push.
-git add home/key.txt.age home/encrypted_private_dot_secrets.local.age home/.chezmoi.toml.tmpl
-git commit -m "feat: enable age-encrypted personal secrets"
-```
-
-**On any other personal Mac:** clone the repo, run `make install`, type the passphrase once when prompted. `~/.secrets.local` materializes automatically, sourced by zsh.
-
-## Work machine secrets
-
-**Maintain `~/.secrets.local` by hand on the work machine.** Never commit it. The work context never decrypts the repo's encrypted personal blob (no private key is materialized), so the work machine never sees personal tokens. zsh's existing `[[ -f ~/.secrets.local ]] && source ~/.secrets.local` line picks up whatever you put there.
+Secrets stay out of the repo. Each machine maintains its own `~/.secrets.local` (e.g. `export GITHUB_PERSONAL_ACCESS_TOKEN="…"`), and zsh sources it on shell start via the `[[ -f ~/.secrets.local ]] && source ~/.secrets.local` line in `home/dot_config/zsh/exports.zsh`. Never commit this file.
 
 ## References
 
 - [chezmoi](https://www.chezmoi.io/) — dotfile manager
-- [chezmoi encryption FAQ](https://www.chezmoi.io/user-guide/frequently-asked-questions/encryption/) — first-time keygen pattern reference
 - [chezmoi macOS guide](https://www.chezmoi.io/user-guide/machines/macos/) — `sw_vers` + `defaults write` patterns
 - [mise](https://mise.jdx.dev/) — runtime version manager
