@@ -1,0 +1,51 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/bin/bash
+# .chezmoiscripts/darwin/run_onchange_02_install-packages.sh.tmpl
+# Runs brew bundle from packages.yaml data.
+# Reruns automatically whenever packages.yaml changes.
+#
+# packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
+set -euo pipefail
+
+if ! command -v brew &>/dev/null; then
+  echo "Homebrew not found — ensure run_once_01_install-homebrew ran successfully."
+  exit 1
+fi
+
+echo "Running brew bundle..."
+
+brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
+tap "homebrew/cask-fonts"
+
+# shared formulas and casks
+{{ range .packages.darwin.homebrew.shared.formulas -}}
+brew "{{ . }}"
+{{ end }}
+{{ range .packages.darwin.homebrew.shared.casks -}}
+cask "{{ . }}"
+{{ end }}
+
+# personal formulas and casks
+{{ if .personal -}}
+{{ range .packages.darwin.homebrew.personal.formulas -}}
+brew "{{ . }}"
+{{ end }}
+{{ range .packages.darwin.homebrew.personal.casks -}}
+cask "{{ . }}"
+{{ end }}
+{{- end }}
+
+# work formulas and casks
+{{ if .work -}}
+{{ range .packages.darwin.homebrew.work.formulas -}}
+brew "{{ . }}"
+{{ end }}
+{{ range .packages.darwin.homebrew.work.casks -}}
+cask "{{ . }}"
+{{ end }}
+{{- end }}
+BREWFILE
+
+echo "Packages installed."
+{{- end }}

@@ -1,0 +1,45 @@
+
+{{/*  boolean feature flags  */}}
+{{- $personal := false -}}
+{{- $work     := false -}}
+
+{{/*  osID — extended for Linux distros  */}}
+{{- $osID := .chezmoi.os -}}
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{/*  hostname — scutil workaround for darwin  */}}
+{{- $hostname := .chezmoi.hostname -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $hostname = output "scutil" "--get" "LocalHostName" | trim -}}
+{{- end -}}
+
+{{/*  machine detection  */}}
+{{- if or (eq $hostname "edwinhern-personal-mac") (eq $hostname "edwinhern-personal-windows") -}}
+{{-   $personal = true -}}
+{{- else if eq $hostname "edwinhern-work-mac" -}}
+{{-   $work = true -}}
+{{- else if stdinIsATTY -}}
+{{-   $ctx := promptChoiceOnce . "context" (printf "Hostname '%s' unrecognized. Which context is this machine?" $hostname) (list "personal" "work") -}}
+{{-   if eq $ctx "personal" -}}{{- $personal = true -}}{{- end -}}
+{{-   if eq $ctx "work"     -}}{{- $work     = true -}}{{- end -}}
+{{- else -}}
+{{-   $personal = true -}}
+{{- end -}}
+
+data:
+    hostname: {{ $hostname | quote }}
+    personal: {{ $personal }}
+    work:     {{ $work }}
+    osid:     {{ $osID | quote }}
+
+    git:
+        name:  {{ promptStringOnce . "git.name"  "Git display name"  | quote }}
+        email: {{ promptStringOnce . "git.email" "Git email address" | quote }}
+
+    font:
+        mono: "Monaspace Argon"
+
+    editor:
+        default: "nano"
