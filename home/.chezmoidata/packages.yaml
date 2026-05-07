@@ -7,6 +7,7 @@ packages:
     homebrew:
       shared:
         formulas:
+          - dockutil
           - fastfetch
           - gh
           - mise
