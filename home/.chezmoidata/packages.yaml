@@ -24,6 +24,7 @@ packages:
           - rectangle
           - superwhisper
           - visual-studio-code
+          - voiceink
 
       personal:
         formulas:
