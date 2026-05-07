@@ -5,7 +5,6 @@ vscode:
     - eamodio.gitlens
     - EditorConfig.EditorConfig
     - esbenp.prettier-vscode
-    - github.copilot-chat
     - usernamehw.errorlens
     # ui / dx
     - adpyke.codesnap
