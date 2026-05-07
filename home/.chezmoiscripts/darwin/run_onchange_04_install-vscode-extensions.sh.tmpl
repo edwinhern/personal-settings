@@ -2,10 +2,10 @@
 
 #!/bin/bash
 # .chezmoiscripts/darwin/run_onchange_04_install-vscode-extensions.sh.tmpl
-# Installs VS Code extensions from packages.yaml vscode section.
-# Reruns automatically whenever packages.yaml changes.
+# Installs VS Code extensions from extensions.yaml vscode section.
+# Reruns automatically whenever extensions.yaml changes.
 #
-# packages.yaml hash: {{ include ".chezmoidata/extensions.yaml" | sha256sum }}
+# extensions.yaml hash: {{ include ".chezmoidata/extensions.yaml" | sha256sum }}
 set -euo pipefail
 
 if ! command -v code &>/dev/null; then
