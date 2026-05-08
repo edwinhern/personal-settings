@@ -10,6 +10,7 @@ packages:
           - dockutil
           - fastfetch
           - gh
+          - git-delta
           - mise
           - starship
           - tmux
