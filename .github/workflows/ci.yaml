@@ -60,5 +60,6 @@ jobs:
       - name: Dry-run apply
         run: |
           "$HOME/.local/bin/chezmoi" apply \
+            --source "$PWD" \
             -n \
             -v
