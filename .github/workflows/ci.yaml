@@ -33,3 +33,33 @@ jobs:
       - uses: docker://rhysd/actionlint:1.7.12
         with:
           args: -color
+
+  chezmoi_dry_run:
+    name: Chezmoi Test (dry-run, ${{ matrix.context }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        context: [personal, work]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
+      - name: Stub chezmoi config (${{ matrix.context }} context)
+        run: |
+          mkdir -p "$HOME/.config/chezmoi"
+          cat > "$HOME/.config/chezmoi/chezmoi.yaml" <<'EOF'
+          data:
+            hostname: ci-runner
+            personal: ${{ matrix.context == 'personal' }}
+            work: ${{ matrix.context == 'work' }}
+            git:
+              name: CI Bot
+              email: ci@example.com
+          EOF
+      - name: Dry-run apply
+        run: |
+          "$HOME/.local/bin/chezmoi" apply \
+            --source "$PWD" \
+            -n \
+            -v

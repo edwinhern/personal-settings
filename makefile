@@ -1,19 +1,35 @@
-fmt:
-	./scripts/format.sh
-.PHONY: fmt
+.PHONY: init
+init:
+	chezmoi init --apply --verbose
 
+.PHONY: diff
+diff:
+	chezmoi diff
+
+.PHONY: update
+update:
+	chezmoi apply --verbose
+
+.PHONY: watch
+watch:
+	DOTFILES_DEBUG=1 watchexec -- chezmoi apply --verbose
+
+.PHONY: reset
+reset:
+	chezmoi state delete-bucket --bucket=scriptState
+
+.PHONY: reset-config
+reset-config:
+	chezmoi init --data=false
+
+.PHONY: format
+format:
+	./scripts/format.sh
+
+.PHONY: lint
 lint:
 	./scripts/lint.sh
-.PHONY: lint
 
+.PHONY: compile
 compile:
 	./scripts/compile.sh
-.PHONY: compile
-
-apply:
-	chezmoi apply --source "$(CURDIR)"
-.PHONY: apply
-
-diff:
-	chezmoi diff --source "$(CURDIR)"
-.PHONY: diff
