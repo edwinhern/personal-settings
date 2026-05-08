@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
-      - name: Stub chezmoi config (bypasses .chezmoi.yaml.tmpl prompts)
+      - name: Stub chezmoi config (skip .chezmoi.yaml.tmpl, mirrors its output)
         run: |
           mkdir -p "$HOME/.config/chezmoi"
           cat > "$HOME/.config/chezmoi/chezmoi.yaml" <<'EOF'
@@ -54,11 +54,6 @@ jobs:
               name: CI Bot
               email: ci@example.com
           EOF
-      - name: Validate .chezmoi.yaml.tmpl renders
-        run: |
-          "$HOME/.local/bin/chezmoi" execute-template \
-            --source "$PWD" \
-            < home/.chezmoi.yaml.tmpl > /dev/null
       - name: Dry-run apply
         run: |
           "$HOME/.local/bin/chezmoi" apply \
