@@ -17,7 +17,7 @@ printf "\n* %s\n\n" "Formatting markdown and YAML..."
 # format Markdown and YAML files.
 mise exec -- prettier --write --ignore-unknown \
   "**/*.md" \
-  "**/*.yml"
+  "**/*.yaml"
 
 printf "\n* %s\n\n" "Formatting TOML..."
 

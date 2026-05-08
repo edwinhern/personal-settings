@@ -1,0 +1,74 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/bin/bash
+# .chezmoiscripts/darwin/run_onchange_05_defaults.sh.tmpl
+# Sets default preferences for macOS.
+# Reruns automatically whenever this script's content changes.
+set -euo pipefail
+
+osascript -e 'tell application "System Settings" to quit'
+
+# Finder
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowTabView -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+defaults write com.apple.finder CreateDesktop -bool false
+killall Finder
+
+# Dock — behavior
+defaults write com.apple.dock orientation -string bottom
+defaults write com.apple.dock launchanim -bool false
+defaults write com.apple.dock tilesize -int 42
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-time-modifier -float 0.5
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock show-recents -bool false
+
+# Dock — pinned apps (declarative via dockutil; missing apps are skipped)
+if command -v dockutil >/dev/null 2>&1; then
+  dockutil --no-restart --remove all >/dev/null 2>&1 || true
+  for app in \
+    "/System/Applications/System Settings.app" \
+    "/System/Applications/Utilities/Activity Monitor.app" \
+    "/Applications/Brave Browser.app" \
+    "/Applications/Visual Studio Code.app" \
+    "/Applications/Ghostty.app" \
+    "/Applications/Discord.app" \
+    "/System/Applications/Music.app" \
+    "/System/Applications/Mail.app" \
+    "/System/Applications/Notes.app" \
+    "/System/Applications/Reminders.app" \
+    "/Applications/CleanShot X.app" \
+    "/Applications/superwhisper.app"; do
+    [ -d "$app" ] && dockutil --no-restart --add "$app" >/dev/null
+  done
+else
+  echo "dockutil not found — skipping dock pinning. Run 'brew install dockutil' or rerun 'chezmoi apply'." >&2
+fi
+killall Dock
+
+# Screenshots
+defaults write com.apple.screencapture disable-shadow -bool true
+mkdir -p "$HOME/Pictures/Screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Pictures/Screenshots"
+defaults write com.apple.screencapture show-thumbnail -bool false
+killall SystemUIServer
+
+# Misc
+defaults write com.apple.CrashReporter DialogType none
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+defaults write -g AppleShowScrollBars -string Always
+
+# Default browser — Brave (only set if not already, avoids macOS confirmation popup)
+if ! defaults read com.apple.LaunchServices/com.apple.launchservices.secure 2>/dev/null \
+    | grep -q '"LSHandlerRoleAll" = "com\.brave\.browser"'; then
+  open -a "Brave Browser" --args --make-default-browser
+fi
+{{- end }}
