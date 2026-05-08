@@ -10,10 +10,6 @@ compile:
 	./scripts/compile.sh
 .PHONY: compile
 
-install:
-	./scripts/install.sh
-.PHONY: install
-
 apply:
 	chezmoi apply --source "$(CURDIR)"
 .PHONY: apply
