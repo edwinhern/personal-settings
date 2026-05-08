@@ -17,3 +17,11 @@ apply:
 diff:
 	chezmoi diff --source "$(CURDIR)"
 .PHONY: diff
+
+dry-run:
+	chezmoi apply --source "$(CURDIR)" --dry-run --verbose
+.PHONY: dry-run
+
+verify:
+	chezmoi verify --source "$(CURDIR)"
+.PHONY: verify

@@ -33,3 +33,20 @@ jobs:
       - uses: docker://rhysd/actionlint:1.7.12
         with:
           args: -color
+
+  chezmoi_dry_run:
+    name: chezmoi apply (dry-run)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
+      - name: Init + dry-run apply
+        run: |
+          "$HOME/.local/bin/chezmoi" init \
+            --apply \
+            --dry-run \
+            --verbose \
+            --source "$PWD" \
+            --promptString 'git.name=CI Bot' \
+            --promptString 'git.email=ci@example.com'
