@@ -35,7 +35,7 @@ jobs:
           args: -color
 
   chezmoi_dry_run:
-    name: chezmoi apply (dry-run, ${{ matrix.context }})
+    name: Chezmoi Test (dry-run, ${{ matrix.context }})
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -53,7 +53,6 @@ jobs:
             hostname: ci-runner
             personal: ${{ matrix.context == 'personal' }}
             work: ${{ matrix.context == 'work' }}
-            osid: darwin
             git:
               name: CI Bot
               email: ci@example.com
@@ -61,6 +60,5 @@ jobs:
       - name: Dry-run apply
         run: |
           "$HOME/.local/bin/chezmoi" apply \
-            --source "$PWD" \
-            --dry-run \
-            --verbose
+            -n \
+            -v
