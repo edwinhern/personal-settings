@@ -1,5 +1,8 @@
 {{- if eq .chezmoi.os "darwin" -}}
-
+{{- /* `shared` always applies; add exactly one of personal/work based on host context. */ -}}
+{{- $groups := list "shared" -}}
+{{- if .personal }}{{ $groups = append $groups "personal" }}{{ end -}}
+{{- if .work     }}{{ $groups = append $groups "work"     }}{{ end -}}
 #!/bin/bash
 # .chezmoiscripts/darwin/run_onchange_02_install-packages.sh.tmpl
 # Runs brew bundle from packages.yaml data.
@@ -16,33 +19,15 @@ fi
 echo "Running brew bundle..."
 
 brew bundle --file=/dev/stdin <<'BREWFILE'
-# shared formulas and casks
-{{ range .packages.darwin.homebrew.shared.formulas -}}
-brew "{{ . }}"
+{{ range $groups }}# {{ . }}
+{{- $g := index $.packages.darwin.homebrew . }}
+{{ range $g.formulas }}brew "{{ . }}"
+{{ end -}}
+{{ range $g.casks }}cask "{{ . }}"
+{{ end -}}
+{{ range $g.mas }}mas "{{ .name }}", id: {{ .id }}
 {{ end }}
-{{ range .packages.darwin.homebrew.shared.casks -}}
-cask "{{ . }}"
-{{ end }}
-
-# personal formulas and casks
-{{ if .personal -}}
-{{ range .packages.darwin.homebrew.personal.formulas -}}
-brew "{{ . }}"
-{{ end }}
-{{ range .packages.darwin.homebrew.personal.casks -}}
-cask "{{ . }}"
-{{ end }}
-{{- end }}
-
-# work formulas and casks
-{{ if .work -}}
-{{ range .packages.darwin.homebrew.work.formulas -}}
-brew "{{ . }}"
-{{ end }}
-{{ range .packages.darwin.homebrew.work.casks -}}
-cask "{{ . }}"
-{{ end }}
-{{- end }}
+{{ end -}}
 BREWFILE
 
 echo "Packages installed."

@@ -1,6 +1,9 @@
 # packages.yaml
 # Single source of truth for all package manager declarations.
 # Referenced by run_onchange_ scripts via Chezmoi template data (.packages.*).
+#
+# Each group under darwin.homebrew has the same shape: {formulas, casks, mas}.
+# `shared` always applies; `personal` or `work` is added based on host context.
 
 packages:
   darwin:
@@ -25,10 +28,9 @@ packages:
           - rectangle
           - superwhisper
           - visual-studio-code
+        mas: []
 
       personal:
-        mas:
-          - 6446206067 # Klack
         formulas:
           - mas
         casks:
@@ -39,7 +41,11 @@ packages:
           - displaylink
           - microsoft-excel
           - synology-drive
+        mas:
+          - name: Klack
+            id: 6446206067
 
       work:
         formulas: []
         casks: []
+        mas: []
