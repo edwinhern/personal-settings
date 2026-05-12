@@ -1,26 +1,25 @@
+CHEZMOI ?= $(HOME)/bin/chezmoi
+SOURCE  := $(CURDIR)
+
 .PHONY: init
 init:
-	chezmoi init --apply --verbose
+	$(CHEZMOI) init --apply --verbose --source=$(SOURCE)
 
 .PHONY: diff
 diff:
-	chezmoi diff
+	$(CHEZMOI) diff --source=$(SOURCE)
 
 .PHONY: update
 update:
-	chezmoi apply --verbose
-
-.PHONY: watch
-watch:
-	DOTFILES_DEBUG=1 watchexec -- chezmoi apply --verbose
+	$(CHEZMOI) apply --verbose --source=$(SOURCE)
 
 .PHONY: reset
 reset:
-	chezmoi state delete-bucket --bucket=scriptState
+	$(CHEZMOI) state delete-bucket --bucket=scriptState
 
 .PHONY: reset-config
 reset-config:
-	chezmoi init --data=false
+	$(CHEZMOI) init --data=false --source=$(SOURCE)
 
 .PHONY: format
 format:

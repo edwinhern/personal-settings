@@ -11,6 +11,7 @@ osascript -e 'tell application "System Settings" to quit'
 # Finder
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+defaults write com.apple.finder ShowSidebar -bool true
 defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write com.apple.finder ShowPathbar -bool true
 defaults write com.apple.finder ShowTabView -bool true
@@ -35,6 +36,7 @@ defaults write com.apple.dock show-recents -bool false
 if command -v dockutil >/dev/null 2>&1; then
   dockutil --no-restart --remove all >/dev/null 2>&1 || true
   for app in \
+    "/System/Applications/Apps.app" \
     "/System/Applications/System Settings.app" \
     "/System/Applications/Utilities/Activity Monitor.app" \
     "/Applications/Brave Browser.app" \
