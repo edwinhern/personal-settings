@@ -25,11 +25,12 @@ packages:
           - rectangle
           - superwhisper
           - visual-studio-code
-          - voiceink
 
       personal:
+        mas:
+          - 6446206067 # Klack
         formulas:
-          - mas # Mac App Store CLI
+          - mas
         casks:
           - aldente
           - claude-code
