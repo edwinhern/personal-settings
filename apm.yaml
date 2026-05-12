@@ -5,4 +5,3 @@ author: Edwin Hernandez
 dependencies:
   apm:
     - edwinhern/personal-settings/development
-    - edwinhern/personal-settings/business
