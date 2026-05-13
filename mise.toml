@@ -1,10 +1,7 @@
 [tools]
 chezmoi = "2.70.2"
-apm = "0.12.4"
+"github:microsoft/apm" = "0.12.4"
 prettier = "3.8.3"
 shellcheck = "0.11.0"
 shfmt = "3.12.0"
 taplo = "0.10.0"
-
-[plugins]
-apm = "https://github.com/edwinhern/asdf-apm"
