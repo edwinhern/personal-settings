@@ -9,6 +9,20 @@
 set -e
 
 echo "[apm] Installing dependencies from ~/.config/apm/apm.yml..."
-cd ~/.config/apm && apm install --runtime claude
+cd ~/.config/apm
+
+# APM has no auto-detect or global-install mode for Claude — it deploys to <cwd>/.claude/.
+# --target claude forces the Claude harness without needing a .claude/ marker in cwd.
+# MCP servers requiring interactive token input (e.g. github-token) will error out,
+# but file integration completes before that step — so we tolerate non-zero exit here.
+apm install --target claude || echo "[apm] apm install exited with errors (MCP token prompts blocked in non-interactive shell — files were integrated before that step)"
+
+# Mirror APM's output into ~/.claude/ where Claude Code actually reads from.
+# rsync (no --delete) merges with existing user content (e.g. ~/.claude/skills/find-docs).
+echo "[apm] Mirroring ~/.config/apm/.claude/ → ~/.claude/..."
+mkdir -p ~/.claude/agents ~/.claude/rules ~/.claude/skills
+rsync -a ~/.config/apm/.claude/agents/ ~/.claude/agents/
+rsync -a ~/.config/apm/.claude/rules/ ~/.claude/rules/
+rsync -a ~/.config/apm/.claude/skills/ ~/.claude/skills/
 
 echo "[apm] Install complete."

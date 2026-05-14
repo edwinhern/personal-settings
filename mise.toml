@@ -1,5 +1,4 @@
 [tools]
-chezmoi = "2.70.2"
 "github:microsoft/apm" = "0.12.4"
 prettier = "3.8.3"
 shellcheck = "0.11.0"

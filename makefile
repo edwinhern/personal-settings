@@ -1,4 +1,4 @@
-CHEZMOI := $(shell command -v chezmoi 2>/dev/null || echo $(HOME)/bin/chezmoi)
+CHEZMOI ?= chezmoi
 SOURCE  := $(CURDIR)
 
 .PHONY: init

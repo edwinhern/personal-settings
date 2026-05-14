@@ -4,10 +4,10 @@ Edwin's dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmoi).
 
 ## Install on a Mac
 
-One command — installs `chezmoi` if missing, clones this repo, and applies it to `$HOME`:
+One command — installs `chezmoi` to `~/.local/bin` if missing, clones this repo, and applies it to `$HOME`:
 
 ```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply edwinhern
+sh -c "$(curl -fsLS https://get.chezmoi.io/lb)" -- init --apply edwinhern
 ```
 
 The bare `edwinhern` is chezmoi's GitHub shorthand — it expands to `https://github.com/edwinhern/dotfiles.git`. You'll be prompted for git name/email and (if the hostname is unfamiliar) personal vs work context.
@@ -21,11 +21,12 @@ After the first apply, `chezmoi apply` is self-completing: editing `home/.chezmo
 These targets operate against the local clone (via `chezmoi --source $PWD`), so you can test edits without pushing:
 
 ```sh
-make apply             # apply local source state to $HOME
+make update            # apply local source state to $HOME
 make diff              # preview what apply would change
-make fmt               # format shell, md, yaml, toml
+make format            # format shell, md, yaml, toml
 make lint              # lint shell, md, yaml, toml
-make compile           # validate APM packages
+make validate          # validate APM packages
+make check             # lint + validate
 ```
 
 Day-to-day chezmoi commands (run from anywhere — they target `~/.local/share/chezmoi`):

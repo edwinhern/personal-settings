@@ -1,5 +1,8 @@
 # zsh exports (PATH, environment variables)
 
+# User-installed binaries (chezmoi via get.chezmoi.io/lb, pipx, cargo, etc.)
+export PATH="$HOME/.local/bin:$PATH"
+
 # Personal: chezmoi decrypts ~/.secrets.local from age-encrypted source state.
 # Work: maintain ~/.secrets.local by hand on the machine; never commit it.
 # shellcheck source=/dev/null
