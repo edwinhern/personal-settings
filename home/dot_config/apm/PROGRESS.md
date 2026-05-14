@@ -16,11 +16,11 @@
 
 ### Agents (`.apm/agents/`)
 
-| Agent | Purpose | Context |
-|-------|---------|---------|
-| `research.agent.md` | Read-only. JIRA ticket → deep-analysis skill → Research Summary → `superpowers:writing-plans` | Work only |
-| `code-reviewer.agent.md` | Code review: confidence filtering, React/TS patterns, false positives list | Both |
-| `doc-researcher.agent.md` | Explicit Context7 documentation lookups | Both |
+| Agent                     | Purpose                                                                                       | Context   |
+| ------------------------- | --------------------------------------------------------------------------------------------- | --------- |
+| `research.agent.md`       | Read-only. JIRA ticket → deep-analysis skill → Research Summary → `superpowers:writing-plans` | Work only |
+| `code-reviewer.agent.md`  | Code review: confidence filtering, React/TS patterns, false positives list                    | Both      |
+| `doc-researcher.agent.md` | Explicit Context7 documentation lookups                                                       | Both      |
 
 ### Skills (`.apm/skills/`)
 
@@ -43,6 +43,7 @@ Ran from `packages/development/`. superpowers (14 skills + session hooks), skill
 ## Workflow Pipelines
 
 ### Work (JIRA ticket)
+
 ```
 JIRA ticket
   → @research agent         (deep-analysis + GitHub MCP + sequential thinking → Research Summary)
@@ -54,6 +55,7 @@ JIRA ticket
 ```
 
 ### Personal (your own idea, you are the PO)
+
 ```
 Your idea
   → superpowers:brainstorming   (explore idea, break into sub-projects if large)
@@ -158,25 +160,25 @@ APM always creates `.agents/` as a cross-tool compatibility output. Since it wil
 
 ## Roadmap (Future)
 
-| Item | Notes |
-|------|-------|
-| **Bitwarden Secret Manager CLI** | Replace `${input:github-token}` with env vars pulled from Bitwarden. Chezmoi already has Bitwarden integration — plan the secret → env var pipeline separately |
-| **GitHub Actions CI for APM** | Workflow that runs `apm install --frozen` and verifies output structure. Similar to chezmoi dry-run — confirms the package installs correctly without side effects |
-| **Business package** | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions |
+| Item                             | Notes                                                                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Bitwarden Secret Manager CLI** | Replace `${input:github-token}` with env vars pulled from Bitwarden. Chezmoi already has Bitwarden integration — plan the secret → env var pipeline separately     |
+| **GitHub Actions CI for APM**    | Workflow that runs `apm install --frozen` and verifies output structure. Similar to chezmoi dry-run — confirms the package installs correctly without side effects |
+| **Business package**             | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                          |
 
 ---
 
 ## What `apm install` Creates (Reference)
 
-| Path | Contents | Keep? |
-|------|---------|-------|
-| `.claude/agents/` | Your agent files | ✓ (target output) |
-| `.claude/rules/` | Your instruction files | ✓ |
-| `.claude/skills/` | All skills (superpowers + custom) | ✓ |
-| `.claude/settings.json` | Superpowers session hooks | ✓ |
-| `.agents/` | Cross-tool skill copy | Ignore (gitignore it) |
-| `.github/` | Copilot output (if detected) | On work machines only |
-| `apm_modules/` | Dependency cache (like node_modules) | Gitignore always |
-| `apm.lock.yaml` | Pinned commit hashes | ✓ commit to source |
+| Path                    | Contents                             | Keep?                 |
+| ----------------------- | ------------------------------------ | --------------------- |
+| `.claude/agents/`       | Your agent files                     | ✓ (target output)     |
+| `.claude/rules/`        | Your instruction files               | ✓                     |
+| `.claude/skills/`       | All skills (superpowers + custom)    | ✓                     |
+| `.claude/settings.json` | Superpowers session hooks            | ✓                     |
+| `.agents/`              | Cross-tool skill copy                | Ignore (gitignore it) |
+| `.github/`              | Copilot output (if detected)         | On work machines only |
+| `apm_modules/`          | Dependency cache (like node_modules) | Gitignore always      |
+| `apm.lock.yaml`         | Pinned commit hashes                 | ✓ commit to source    |
 
 `CLAUDE.md` is **not** created by APM — manage separately.
