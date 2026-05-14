@@ -1,0 +1,14 @@
+#!/bin/bash
+# Reinstalls APM dependencies whenever apm.yml or .apm/ content changes.
+#
+# apm.yml:       {{ include "home/dot_config/apm/apm.yml.tmpl" | sha256sum }}
+# agents:        {{ range (glob "home/dot_config/apm/dot_apm/agents/*") }}{{ . | sha256sum }} {{ end }}
+# instructions:  {{ range (glob "home/dot_config/apm/dot_apm/instructions/*") }}{{ . | sha256sum }} {{ end }}
+# skills:        {{ range (glob "home/dot_config/apm/dot_apm/skills/**/*") }}{{ . | sha256sum }} {{ end }}
+
+set -e
+
+echo "[apm] Installing dependencies from ~/.config/apm/apm.yml..."
+cd ~/.config/apm && apm install --runtime claude
+
+echo "[apm] Install complete."

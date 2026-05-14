@@ -8,24 +8,6 @@ dependencies:
     - obra/superpowers
     - anthropics/claude-plugins-official/plugins/skill-creator
   mcp:
-    - name: figma
-      registry: false
-      transport: http
-      url: https://mcp.figma.com/mcp
-      headers:
-        Authorization: "Bearer ${input:figma-token}"
-    - name: atlassian
-      registry: false
-      transport: stdio
-      command: npx
-      args:
-        [
-          "-y",
-          "mcp-remote",
-          "https://mcp.atlassian.com/v1/mcp",
-          "--resource",
-          "<ADD_INTERNAL_RESOURCE_URL>",
-        ]
     - name: io.github.github/github-mcp-server
       env:
         GITHUB_PERSONAL_ACCESS_TOKEN: "${input:github-token}"
@@ -50,3 +32,22 @@ dependencies:
         - "-y"
         - "@modelcontextprotocol/server-filesystem"
         - "${input:github-root-directory}"
+{{ if .work }}
+    - name: figma
+      registry: false
+      transport: http
+      url: https://mcp.figma.com/mcp
+      headers:
+        Authorization: "Bearer ${input:figma-token}"
+
+    - name: atlassian
+      registry: false
+      transport: stdio
+      command: npx
+      args:
+        - "-y"
+        - "mcp-remote"
+        - "https://mcp.atlassian.com/v1/mcp"
+        - "--resource"
+        - "{{ .atlassian_resource_url }}"
+{{ end }}
