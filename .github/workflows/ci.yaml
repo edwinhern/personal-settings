@@ -52,7 +52,7 @@ jobs:
       - name: Dry-run apm install
         run: |
           cd "$HOME/.apm"
-          apm install --dry-run --global --target claude
+          apm install --dry-run --global
 
   actions_lint:
     name: Lint GitHub Actions workflows

@@ -8,17 +8,18 @@
 
 set -e
 
-# apm install --global reads apm.yml from ~/.apm/apm.yml (APM's native user-scope
-# location) and deploys to ~/.claude/ via CLAUDE_CONFIG_DIR (default ~/.claude/).
-# Per the targets matrix: user scope honors CLAUDE_CONFIG_DIR for Claude.
-# https://microsoft.github.io/apm/reference/targets-matrix/#claude
-echo "[apm] Installing globally from ~/.apm/apm.yml → ~/.claude/..."
+# apm install --global reads apm.yml from ~/.apm/apm.yml and deploys to each
+# target's user-scope directory (Claude → ~/.claude/, Copilot → ~/.copilot/).
+# Targets are declared in apm.yml as `target: [claude, copilot]`, so no --target
+# flag is needed here. Skills auto-converge into ~/.agents/skills/ regardless.
+# https://microsoft.github.io/apm/reference/targets-matrix/
+echo "[apm] Installing globally from ~/.apm/apm.yml..."
 cd ~/.apm
 
 # MCP servers using ${input:...} interactive prompts (e.g. github-token) fail
 # under chezmoi's non-interactive shell. APM integrates agents/skills/rules
 # before the MCP step, so a non-zero exit here doesn't lose the deployment.
 # Bitwarden integration is the planned long-term fix (roadmap in PROGRESS.md).
-apm install --global --target claude || echo "[apm] apm install exited with errors (likely MCP token prompts in non-interactive shell)"
+apm install --global || echo "[apm] apm install exited with errors (likely MCP token prompts in non-interactive shell)"
 
 echo "[apm] Install complete."
