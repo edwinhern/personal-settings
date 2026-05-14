@@ -46,13 +46,13 @@ jobs:
           EOF
       - name: Render apm.yml from template
         run: |
-          mkdir -p "$HOME/.config/apm"
-          "$HOME/.local/bin/chezmoi" execute-template < home/dot_config/apm/apm.yml.tmpl > "$HOME/.config/apm/apm.yml"
-          cp -r home/dot_config/apm/dot_apm "$HOME/.config/apm/.apm"
+          mkdir -p "$HOME/.apm"
+          "$HOME/.local/bin/chezmoi" execute-template < home/dot_apm/apm.yml.tmpl > "$HOME/.apm/apm.yml"
+          cp -r home/dot_apm/dot_apm "$HOME/.apm/.apm"
       - name: Dry-run apm install
         run: |
-          cd "$HOME/.config/apm"
-          apm install --dry-run --runtime claude
+          cd "$HOME/.apm"
+          apm install --dry-run --global --target claude
 
   actions_lint:
     name: Lint GitHub Actions workflows

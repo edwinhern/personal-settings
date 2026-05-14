@@ -68,20 +68,20 @@ Your idea
 
 ## Next Steps — Chezmoi Integration
 
-### ✅ Step 1: Restructure into `~/.config/apm/`
+### ✅ Step 1: Deploy source into `~/.apm/` (APM's native user-scope home)
 
-Move source files into chezmoi `home/` under `.config/apm/` to keep root clean:
+APM's `--global` flag reads `apm.yml` from `~/.apm/apm.yml` and, per the [targets matrix](https://microsoft.github.io/apm/reference/targets-matrix/#claude), deploys Claude content to `CLAUDE_CONFIG_DIR` (defaults to `~/.claude/`). So chezmoi puts source files directly into APM's home:
 
 ```
-dotfiles/home/dot_config/apm/
-  apm.yml.tmpl              →  ~/.config/apm/apm.yml
-  dot_apm/                  →  ~/.config/apm/.apm/
+dotfiles/home/dot_apm/
+  apm.yml.tmpl              →  ~/.apm/apm.yml
+  dot_apm/                  →  ~/.apm/.apm/
     agents/
     instructions/
     skills/
 ```
 
-APM reads `apm.yml` from the working directory — running `cd ~/.config/apm && apm install` works correctly. The `~/.apm/` that already exists is APM's internal cache (separate, no conflict).
+`apm install --global --target claude` then deploys agents/skills/rules to `~/.claude/` natively — no symlink hack, no file copying. The `apm_modules/` cache, `cache/`, `config.json`, and `marketplaces.json` files APM creates at `~/.apm/` coexist with our chezmoi-managed `apm.yml` + `.apm/`.
 
 ### ✅ Step 2: Create `apm.yml.tmpl` — Work-Only MCP Servers
 
@@ -144,20 +144,16 @@ dotfiles/home/.chezmoiscripts/darwin/run_onchange_06_install-apm.sh.tmpl
 #!/bin/bash
 # Reinstalls APM dependencies whenever apm.yml or .apm/ content changes.
 {{- $src := .chezmoi.sourceDir }}
-# apm.yml:       {{ include "dot_config/apm/apm.yml.tmpl" | sha256sum }}
-# agents:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/agents/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
-# instructions:  {{ range (glob (printf "%s/dot_config/apm/dot_apm/instructions/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
-# skills:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/skills/**/*.md" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# apm.yml:       {{ include "dot_apm/apm.yml.tmpl" | sha256sum }}
+# agents:        {{ range (glob (printf "%s/dot_apm/dot_apm/agents/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# instructions:  {{ range (glob (printf "%s/dot_apm/dot_apm/instructions/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# skills:        {{ range (glob (printf "%s/dot_apm/dot_apm/skills/**/*.md" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
 
 set -e
-cd ~/.config/apm && apm install --runtime claude
+cd ~/.apm && apm install --global --target claude
 ```
 
-**Key:** paths are relative to `.chezmoiroot` (`home/`) — no `home/` prefix. `glob` uses `.chezmoi.sourceDir` for portability across machines. Content of every agent, instruction, and skill file is hashed — content changes trigger reinstall.
-
-### Step 4: `.agents/` Output
-
-APM always creates `.agents/` as a cross-tool compatibility output. Since it will land at `~/.config/apm/.agents/` (not root), it stays contained. Add to `.gitignore` there. No action needed in root.
+**Key:** paths are relative to `.chezmoiroot` (`home/`) — no `home/` prefix. `glob` uses `.chezmoi.sourceDir` for portability across machines. Content of every agent, instruction, and skill file is hashed — content changes trigger reinstall. `--global --target claude` makes APM read from `~/.apm/apm.yml` and deploy to `~/.claude/` directly (via `CLAUDE_CONFIG_DIR`).
 
 ---
 
