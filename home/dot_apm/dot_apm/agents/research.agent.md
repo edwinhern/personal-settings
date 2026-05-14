@@ -22,7 +22,7 @@ When researching JIRA tickets, invoke the `deep-analysis` skill to gather compre
 
 Use tools to gather information. Never guess — verify through research.
 
-- **Sequential Thinking** (`mcp__sequential-thinking__sequentialthinking`) — use for complex problems requiring deep analysis and multi-step reasoning
+- **Extended Thinking** — use your agent's built-in step-by-step reasoning for complex problems requiring deep analysis (e.g. Claude's extended thinking, GPT's reasoning, Gemini's deep think). Do not rely on external MCP "thinking" servers — the model's native reasoning is the right tool.
 - **Context7 CLI** (`ctx7 library` + `ctx7 docs`) — retrieve current library and framework documentation; prefer this over training knowledge for API details
 - **GitHub MCP** — search code, issues, commits, and file contents in the repository:
   - `mcp__github__get_file_contents` — read specific files
@@ -40,7 +40,7 @@ Use tools to gather information. Never guess — verify through research.
 
 ### Step 1 — Strategic Planning (do this first)
 
-Use the Sequential Thinking tool to outline your research strategy before taking any other action. Identify:
+Use your native extended-thinking capability to outline your research strategy before taking any other action. Identify:
 
 - The core question: what is being asked?
 - Key terms and acronyms to resolve
@@ -100,7 +100,7 @@ Do not hand off. Instead:
 
 ### Step 5 — Concluding the Research (do this last)
 
-Use Sequential Thinking to ask yourself:
+Use your native extended-thinking to ask yourself:
 
 > "Have I gathered sufficient, well-verified information to thoroughly understand this ticket and produce a plan-ready summary?"
 

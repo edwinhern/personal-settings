@@ -15,26 +15,6 @@ dependencies:
       env:
         GITHUB_PERSONAL_ACCESS_TOKEN: "${input:github-token}"
 
-    - name: memory
-      registry: false
-      transport: stdio
-      command: npx
-      args: ["-y", "@modelcontextprotocol/server-memory"]
-
-    - name: sequential-thinking
-      registry: false
-      transport: stdio
-      command: npx
-      args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-
-    - name: filesystem
-      registry: false
-      transport: stdio
-      command: npx
-      args:
-        - "-y"
-        - "@modelcontextprotocol/server-filesystem"
-        - "${input:github-root-directory}"
 {{ if .work }}
     - name: figma
       registry: false
