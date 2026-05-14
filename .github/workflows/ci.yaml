@@ -48,6 +48,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.apm"
           "$HOME/.local/bin/chezmoi" execute-template < home/dot_apm/apm.yml.tmpl > "$HOME/.apm/apm.yml"
+          cp home/dot_apm/apm.lock.yaml "$HOME/.apm/apm.lock.yaml"
           cp -r home/dot_apm/dot_apm "$HOME/.apm/.apm"
       - name: Dry-run apm install
         run: |
