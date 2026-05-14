@@ -8,21 +8,24 @@
 
 set -e
 
-echo "[apm] Installing dependencies from ~/.config/apm/apm.yml..."
+# APM deploys to <cwd>/.claude/ — its --global flag goes to ~/.apm/ (Copilot/Codex
+# only, per https://microsoft.github.io/apm/reference/cli/install/). For Claude
+# there is no native global mode, so we symlink <cwd>/.claude → ~/.claude/. APM
+# writes through the symlink, landing files directly where Claude Code reads.
+# TODO: for work context using --target copilot, set up a parallel .github/ symlink.
+echo "[apm] Linking ~/.config/apm/.claude → ~/.claude/ for global deployment..."
+mkdir -p "$HOME/.claude"
 cd ~/.config/apm
+if [ ! -L .claude ] || [ "$(readlink .claude)" != "$HOME/.claude" ]; then
+  rm -rf .claude
+  ln -s "$HOME/.claude" .claude
+fi
 
-# APM has no auto-detect or global-install mode for Claude — it deploys to <cwd>/.claude/.
-# --target claude forces the Claude harness without needing a .claude/ marker in cwd.
-# MCP servers requiring interactive token input (e.g. github-token) will error out,
-# but file integration completes before that step — so we tolerate non-zero exit here.
-apm install --target claude || echo "[apm] apm install exited with errors (MCP token prompts blocked in non-interactive shell — files were integrated before that step)"
-
-# Mirror APM's output into ~/.claude/ where Claude Code actually reads from.
-# rsync (no --delete) merges with existing user content (e.g. ~/.claude/skills/find-docs).
-echo "[apm] Mirroring ~/.config/apm/.claude/ → ~/.claude/..."
-mkdir -p ~/.claude/agents ~/.claude/rules ~/.claude/skills
-rsync -a ~/.config/apm/.claude/agents/ ~/.claude/agents/
-rsync -a ~/.config/apm/.claude/rules/ ~/.claude/rules/
-rsync -a ~/.config/apm/.claude/skills/ ~/.claude/skills/
+echo "[apm] Installing dependencies from apm.yml..."
+# MCP servers using ${input:...} interactive prompts (e.g. github-token) fail
+# under chezmoi's non-interactive shell. APM integrates agents/skills/rules
+# before the MCP step, so a non-zero exit here doesn't lose the deployment.
+# Bitwarden integration is the planned long-term fix (roadmap in PROGRESS.md).
+apm install --target claude || echo "[apm] apm install exited with errors (likely MCP token prompts in non-interactive shell)"
 
 echo "[apm] Install complete."
