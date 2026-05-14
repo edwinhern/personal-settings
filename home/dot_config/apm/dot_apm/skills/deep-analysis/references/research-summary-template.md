@@ -63,12 +63,12 @@
 
 ## Confidence Score
 
-| Category                  | Score | Max |
-| ------------------------- | ----- | --- |
-| Requirements Understanding | _     | 40  |
-| Technical Clarity         | _     | 30  |
-| Context Completeness      | _     | 30  |
-| **Total**                 | _     | 100 |
+| Category                   | Score | Max |
+| -------------------------- | ----- | --- |
+| Requirements Understanding | \_    | 40  |
+| Technical Clarity          | \_    | 30  |
+| Context Completeness       | \_    | 30  |
+| **Total**                  | \_    | 100 |
 
 ## Open Questions
 

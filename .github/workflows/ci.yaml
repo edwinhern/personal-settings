@@ -18,12 +18,41 @@ jobs:
       - run: make lint
 
   validate_apm:
-    name: Validate APM packages
+    name: Validate APM config (dry-run, ${{ matrix.context }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        context: [personal, work]
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - run: make compile
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
+      - name: Install APM
+        run: curl -sSL https://aka.ms/apm-unix | sh
+      - name: Stub chezmoi config (${{ matrix.context }} context)
+        run: |
+          mkdir -p "$HOME/.config/chezmoi"
+          cat > "$HOME/.config/chezmoi/chezmoi.yaml" <<'EOF'
+          data:
+            hostname: ci-runner
+            personal: ${{ matrix.context == 'personal' }}
+            work: ${{ matrix.context == 'work' }}
+            git:
+              name: CI Bot
+              email: ci@example.com
+            atlassian_resource_url: "https://example.atlassian.net"
+          EOF
+      - name: Render apm.yml from template
+        run: |
+          mkdir -p "$HOME/.config/apm"
+          "$HOME/.local/bin/chezmoi" execute-template < home/dot_config/apm/apm.yml.tmpl > "$HOME/.config/apm/apm.yml"
+          cp -r home/dot_config/apm/dot_apm "$HOME/.config/apm/.apm"
+      - name: Dry-run apm install
+        run: |
+          cd "$HOME/.config/apm"
+          apm install --dry-run --runtime claude
 
   actions_lint:
     name: Lint GitHub Actions workflows
@@ -56,6 +85,7 @@ jobs:
             git:
               name: CI Bot
               email: ci@example.com
+            atlassian_resource_url: "https://example.atlassian.net"
           EOF
       - name: Dry-run apply
         run: |

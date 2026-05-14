@@ -10,12 +10,12 @@ Measure analysis completeness on JIRA tickets across the dimensions: business go
 
 ### 1. Requirements Understanding (40 points)
 
-| Criterion                    | Points | Self-Check Question                                       |
-| ---------------------------- | ------ | --------------------------------------------------------- |
-| Core requirement understood  | 10     | "Can I explain what needs to be built in one sentence?"   |
-| Acceptance criteria clear    | 10     | "Do I know exactly when to say 'done'?"                   |
-| Constraints documented       | 10     | "Have I captured limits, perf, and a11y constraints?"     |
-| Edge cases identified        | 10     | "What could go wrong? What are the boundaries?"           |
+| Criterion                   | Points | Self-Check Question                                     |
+| --------------------------- | ------ | ------------------------------------------------------- |
+| Core requirement understood | 10     | "Can I explain what needs to be built in one sentence?" |
+| Acceptance criteria clear   | 10     | "Do I know exactly when to say 'done'?"                 |
+| Constraints documented      | 10     | "Have I captured limits, perf, and a11y constraints?"   |
+| Edge cases identified       | 10     | "What could go wrong? What are the boundaries?"         |
 
 ### 2. Technical Clarity (30 points)
 
@@ -28,12 +28,12 @@ Measure analysis completeness on JIRA tickets across the dimensions: business go
 
 ### 3. Context Completeness (30 points)
 
-| Criterion              | Points | Self-Check Question                                    |
-| ---------------------- | ------ | ------------------------------------------------------ |
-| Design context (Figma) | 10     | "Do I have design specs (or know we don't need them)?" |
-| Related issues mapped  | 10     | "Are there related tickets, PRs, or prior work?"       |
-| Stakeholders identified| 5      | "Who owns this? Who reviews this?"                     |
-| Documentation reviewed | 5      | "Have I read the relevant Confluence pages?"           |
+| Criterion               | Points | Self-Check Question                                    |
+| ----------------------- | ------ | ------------------------------------------------------ |
+| Design context (Figma)  | 10     | "Do I have design specs (or know we don't need them)?" |
+| Related issues mapped   | 10     | "Are there related tickets, PRs, or prior work?"       |
+| Stakeholders identified | 5      | "Who owns this? Who reviews this?"                     |
+| Documentation reviewed  | 5      | "Have I read the relevant Confluence pages?"           |
 
 ## Confidence Calculation
 

@@ -2,6 +2,7 @@ name: development
 version: 1.0.0
 description: APM project for development
 author: Edwin Hernandez
+includes: auto
 dependencies:
   apm:
     - obra/superpowers
@@ -31,3 +32,22 @@ dependencies:
         - "-y"
         - "@modelcontextprotocol/server-filesystem"
         - "${input:github-root-directory}"
+{{ if .work }}
+    - name: figma
+      registry: false
+      transport: http
+      url: https://mcp.figma.com/mcp
+      headers:
+        Authorization: "Bearer ${input:figma-token}"
+
+    - name: atlassian
+      registry: false
+      transport: stdio
+      command: npx
+      args:
+        - "-y"
+        - "mcp-remote"
+        - "https://mcp.atlassian.com/v1/mcp"
+        - "--resource"
+        - "{{ .atlassian_resource_url }}"
+{{ end }}
