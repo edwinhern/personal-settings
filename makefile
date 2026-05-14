@@ -1,4 +1,4 @@
-CHEZMOI ?= $(HOME)/bin/chezmoi
+CHEZMOI := $(shell command -v chezmoi 2>/dev/null || echo $(HOME)/bin/chezmoi)
 SOURCE  := $(CURDIR)
 
 .PHONY: init
@@ -29,6 +29,9 @@ format:
 lint:
 	./scripts/lint.sh
 
-.PHONY: compile
-compile:
+.PHONY: validate
+validate:
 	./scripts/compile.sh
+
+.PHONY: check
+check: lint validate

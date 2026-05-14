@@ -166,8 +166,9 @@ APM always creates `.agents/` as a cross-tool compatibility output. Since it wil
 | Item                             | Notes                                                                                                                                                          |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Bitwarden Secret Manager CLI** | Replace `${input:github-token}` with env vars pulled from Bitwarden. Chezmoi already has Bitwarden integration — plan the secret → env var pipeline separately |
-| ✅ **GitHub Actions CI for APM** | `validate_apm` job renders `apm.yml.tmpl` via chezmoi + runs `apm install --dry-run --runtime claude` for both personal and work contexts. All jobs green.     |
+| ✅ **GitHub Actions CI for APM** | `validate_apm` job renders `apm.yml.tmpl` via chezmoi + runs `apm install --dry-run --runtime claude` for both personal and work contexts. All jobs green.    |
 | **Business package**             | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                      |
+| **Reduce lint toolchain**        | Currently 4 tools: prettier, shellcheck, shfmt, taplo. `taplo` (TOML) is most optional. `shfmt` overlaps with shellcheck but handles formatting. Evaluate dropping taplo first. |
 
 ---
 
