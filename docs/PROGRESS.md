@@ -142,15 +142,18 @@ dotfiles/home/.chezmoiscripts/darwin/run_onchange_06_install-apm.sh.tmpl
 
 ```bash
 #!/bin/bash
-# Reruns when apm.yml or any .apm/ content changes
-# apm.yml: {{ include "home/dot_config/apm/apm.yml.tmpl" | sha256sum }}
-# agents:  {{ range (glob "home/dot_config/apm/dot_apm/agents/*") }}{{ . | sha256sum }} {{ end }}
-# skills:  {{ range (glob "home/dot_config/apm/dot_apm/skills/**/*") }}{{ . | sha256sum }} {{ end }}
+# Reinstalls APM dependencies whenever apm.yml or .apm/ content changes.
+{{- $src := .chezmoi.sourceDir }}
+# apm.yml:       {{ include "dot_config/apm/apm.yml.tmpl" | sha256sum }}
+# agents:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/agents/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# instructions:  {{ range (glob (printf "%s/dot_config/apm/dot_apm/instructions/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# skills:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/skills/**/*.md" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
 
-cd ~/.config/apm && apm install
+set -e
+cd ~/.config/apm && apm install --runtime claude
 ```
 
-Hashes `apm.yml`, all agents, and all skills — reruns whenever any of them change.
+**Key:** paths are relative to `.chezmoiroot` (`home/`) — no `home/` prefix. `glob` uses `.chezmoi.sourceDir` for portability across machines. Content of every agent, instruction, and skill file is hashed — content changes trigger reinstall.
 
 ### Step 4: `.agents/` Output
 
@@ -160,11 +163,11 @@ APM always creates `.agents/` as a cross-tool compatibility output. Since it wil
 
 ## Roadmap (Future)
 
-| Item                             | Notes                                                                                                                                                              |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Bitwarden Secret Manager CLI** | Replace `${input:github-token}` with env vars pulled from Bitwarden. Chezmoi already has Bitwarden integration — plan the secret → env var pipeline separately     |
-| **GitHub Actions CI for APM**    | Workflow that runs `apm install --frozen` and verifies output structure. Similar to chezmoi dry-run — confirms the package installs correctly without side effects |
-| **Business package**             | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                          |
+| Item                             | Notes                                                                                                                                                          |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bitwarden Secret Manager CLI** | Replace `${input:github-token}` with env vars pulled from Bitwarden. Chezmoi already has Bitwarden integration — plan the secret → env var pipeline separately |
+| ✅ **GitHub Actions CI for APM** | `validate_apm` job renders `apm.yml.tmpl` via chezmoi + runs `apm install --dry-run --runtime claude` for both personal and work contexts. All jobs green.    |
+| **Business package**             | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                      |
 
 ---
 
