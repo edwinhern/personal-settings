@@ -1,10 +1,10 @@
 #!/bin/bash
 # Reinstalls APM dependencies whenever apm.yml or .apm/ content changes.
-#
-# apm.yml:       {{ include "home/dot_config/apm/apm.yml.tmpl" | sha256sum }}
-# agents:        {{ range (glob "home/dot_config/apm/dot_apm/agents/*") }}{{ . | sha256sum }} {{ end }}
-# instructions:  {{ range (glob "home/dot_config/apm/dot_apm/instructions/*") }}{{ . | sha256sum }} {{ end }}
-# skills:        {{ range (glob "home/dot_config/apm/dot_apm/skills/**/*") }}{{ . | sha256sum }} {{ end }}
+{{- $src := .chezmoi.sourceDir }}
+# apm.yml:       {{ include "dot_config/apm/apm.yml.tmpl" | sha256sum }}
+# agents:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/agents/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# instructions:  {{ range (glob (printf "%s/dot_config/apm/dot_apm/instructions/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
+# skills:        {{ range (glob (printf "%s/dot_config/apm/dot_apm/skills/**/*.md" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
 
 set -e
 
