@@ -14,4 +14,4 @@ runs:
       env:
         CONTEXT: ${{ inputs.context }}
       run: |
-        "$GITHUB_WORKSPACE/scripts/write-chezmoi-config.sh" "$CONTEXT"
+        "$GITHUB_ACTION_PATH/write-chezmoi-config.sh" "$CONTEXT"
