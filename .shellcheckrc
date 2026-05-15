@@ -1,0 +1,9 @@
+# shellcheck config. Read by `shellcheck` from the working directory at run
+# time and by editor extensions (VS Code, Zed) for inline diagnostics.
+
+# Treat all scripts as bash. POSIX sh constructs remain valid; bash dialect
+# just permits a richer superset so shellcheck stops warning about [[ etc.
+shell=bash
+
+# Follow `source` / `.` directives so shellcheck can resolve helper imports.
+external-sources=true

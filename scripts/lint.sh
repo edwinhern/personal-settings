@@ -2,31 +2,21 @@
 
 set -eu
 
-# check format Markdown and YAML files.
-mise exec -- prettier --check --ignore-unknown \
-  "**/*.md" \
-  "**/*.yml" \
-  "**/*.yaml" \
-  "!tests/test_helpers/**"
+# Each tool below auto-discovers its config from the repo root:
+# prettier reads .prettierrc and .prettierignore;
+# shfmt reads .editorconfig (shell_variant = bash);
+# the shell linter reads .shellcheckrc;
+# taplo reads taplo.toml.
 
-printf "* %s\n" "Linting shell scripts..."
+mise exec -- prettier --check .
 
-# Collect shell targets from scripts/, home/dot_config/zsh/, and .github/actions/.
+# Collect shell targets for shellcheck + shfmt. Scope is kept narrow so
+# untouched legacy scripts (e.g. statusline) are not pulled in implicitly.
 SH_TARGETS=$(find scripts home/dot_config/zsh .github/actions -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
 
-# check format Shell scripts (bash dialect covers posix + zsh constructs).
 # shellcheck disable=SC2086
-mise exec -- shfmt --language-dialect bash --indent 2 --diff ${SH_TARGETS}
-
-# lint for errors in Shell scripts.
+mise exec -- shellcheck ${SH_TARGETS}
 # shellcheck disable=SC2086
-mise exec -- shellcheck --shell bash --external-sources ${SH_TARGETS}
+mise exec -- shfmt --diff ${SH_TARGETS}
 
-printf "* %s\n" "Checking TOML formatting..."
-
-# check TOML formatting (skip *.tmpl — chezmoi templates contain Go template syntax).
-TOML_TARGETS=$(find . -name '*.toml' -not -name '*.tmpl' -not -path './.git/*')
-# shellcheck disable=SC2086
-mise exec -- taplo fmt --check ${TOML_TARGETS}
-
-printf "* %s\n" "All linting complete!"
+mise exec -- taplo fmt --check

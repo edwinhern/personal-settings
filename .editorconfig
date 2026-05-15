@@ -9,3 +9,8 @@ insert_final_newline = true
 
 [Makefile]
 indent_style = tab
+
+# shfmt reads .editorconfig natively. shell_variant = bash matches the
+# `--shell bash` rule in .shellcheckrc so both tools parse the same dialect.
+[*.{sh,zsh,bash}]
+shell_variant = bash
