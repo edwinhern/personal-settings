@@ -21,6 +21,8 @@ echo "Running brew bundle..."
 brew bundle --file=/dev/stdin <<'BREWFILE'
 {{ range $groups }}# {{ . }}
 {{- $g := index $.packages.darwin.homebrew . }}
+{{ range $g.taps }}tap "{{ . }}"
+{{ end -}}
 {{ range $g.formulas }}brew "{{ . }}"
 {{ end -}}
 {{ range $g.casks }}cask "{{ . }}"
