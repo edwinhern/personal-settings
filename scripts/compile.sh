@@ -6,17 +6,6 @@ printf "* %s\n\n" "Validating APM packages..."
 
 found=0
 
-# Legacy: packages/ directory (kept for future multi-package use)
-for package_dir in packages/*/; do
-  if [ -f "${package_dir}apm.yml" ]; then
-    package_name=$(basename "$package_dir")
-    printf "Compiling package: %s\n" "$package_name"
-    (cd "$package_dir" && apm compile --validate)
-    printf "✓ %s compiled successfully\n\n" "$package_name"
-    found=$((found + 1))
-  fi
-done
-
 # Primary: home/dot_config/apm/ (chezmoi-managed, template file)
 # apm.yml.tmpl is rendered by chezmoi at apply time — validate the rendered copy
 # if it exists (i.e. chezmoi has been applied), otherwise dry-run from source.

@@ -1,1 +1,3 @@
-.apm/apm.lock.yaml
+{{ if eq .chezmoi.os "darwin" -}}
+{{ template "chezmoiignore.d/darwin" . }}
+{{- end }}

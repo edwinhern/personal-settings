@@ -1,6 +1,2 @@
-# taplo config. Auto-discovered when `taplo` runs from the repo root.
-# Replaces the inline `find . -name '*.toml' -not -name '*.tmpl'` glob
-# previously in scripts/lint.sh and scripts/format.sh.
-
 include = ["**/*.toml"]
 exclude = ["**/*.tmpl", "**/.git/**", "tests/test_helpers/**"]

@@ -2,7 +2,7 @@
 # time and by editor extensions (VS Code, Zed) for inline diagnostics.
 
 # Treat all scripts as bash. POSIX sh constructs remain valid; bash dialect
-# just permits a richer superset so shellcheck stops warning about [[ etc.
+# permits a richer superset so shellcheck stops warning about [[ etc.
 shell=bash
 
 # Follow `source` / `.` directives so shellcheck can resolve helper imports.
