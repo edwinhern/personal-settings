@@ -38,17 +38,20 @@ home/.chezmoitemplates/lib/
 │   └── os-detect.sh              # is_darwin, is_linux, has_command (deferred until a caller needs it)
 ├── darwin/                       # macOS-specific (deferred)
 │   └── homebrew.sh               # brew_install_if_missing
-└── install/                      # cross-cutting install routines (deferred)
-    ├── apm.sh                    # apm_install_main, apm_install_with_retry
-    └── chezmoi.sh                # chezmoi_install_if_missing
+└── install/                      # cross-cutting install routines
+    ├── apm.sh                    # apm_install_main (✅ shipped in current PR)
+    └── chezmoi.sh                # chezmoi_install_if_missing (deferred until a caller needs it)
 ```
 
-**YAGNI policy for the lib:** add a primitive only when a `.chezmoiscripts/*.tmpl` script actually needs it. `log.sh` lands first because `run_onchange_06_install-apm.sh.tmpl` already has two diagnostic `echo` lines that benefit. `error.sh` / `os-detect.sh` / `homebrew.sh` etc. stay deferred — they have zero current callers and would be dead code on landing.
+**YAGNI policy for the lib:** add a primitive only when a `.chezmoiscripts/*.tmpl` script actually needs it. `log.sh` and `install/apm.sh` land first because `run_onchange_06_install-apm.sh.tmpl` is the caller. `error.sh` / `os-detect.sh` / `homebrew.sh` etc. stay deferred because they have zero current callers and would be dead code on landing.
 
-Consuming `.chezmoiscripts/*.tmpl` files pull in lib content via:
+Consuming `.chezmoiscripts/*.tmpl` files pull in lib content inside their OS guard via:
 
 ```go-template
+{{ if eq .chezmoi.os "darwin" }}
 {{ template "lib/common/log.sh" . }}
+{{ template "lib/install/apm.sh" . }}
+{{ end }}
 ```
 
 **Rationale:** mirrors chezmoi's own `.chezmoiscripts/{darwin,linux,windows}/` convention; OS separation is forward-looking even though only darwin exists today; pure-shell library files are unit-testable.
@@ -70,6 +73,7 @@ tests/
 ├── test_helpers/                 # vendored bats companion libs + load.bash
 ├── unit/
 │   ├── lib/common/log.bats       # ✅ shipped in current PR (9 tests)
+│   ├── lib/install/apm.bats       # ✅ shipped in current PR (2 tests)
 │   ├── statusline.bats           # tests/integration for home/dot_claude/statusline-command.sh (4 tests)
 │   └── write-chezmoi-config.bats # ✅ shipped in current PR (7 tests, covers personal/work/invalid)
 ├── template/
@@ -176,8 +180,10 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 ### Current PR — library extraction + shell coverage
 
 - [x] Add `home/.chezmoitemplates/lib/common/log.sh` (`log_info`, `log_warn`, `log_error`).
-- [x] Refactor `run_onchange_06_install-apm.sh.tmpl` to inject `lib/common/log.sh` via `{{ template }}`.
+- [x] Add `home/.chezmoitemplates/lib/install/apm.sh` with executable bash script shape and `apm_install_main`.
+- [x] Refactor `run_onchange_06_install-apm.sh.tmpl` to inject `lib/common/log.sh` and `lib/install/apm.sh` inside the Darwin gate.
 - [x] Add `tests/unit/lib/common/log.bats` (9 tests covering stdout/stderr routing, prefixes, special chars).
+- [x] Add `tests/unit/lib/install/apm.bats` with fake `apm` on `PATH`.
 - [x] Add `tests/unit/write-chezmoi-config.bats` (7 tests covering personal/work/invalid contexts and re-runs).
 - [x] Add `tests/template/install-apm-script.bats` (6 tests; verifies lib injection and rendered-script bash syntax).
 - [x] Pin `chezmoi = "2.70.3"` in `mise.toml` so template tests run anywhere with mise.

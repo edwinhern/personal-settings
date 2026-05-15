@@ -15,6 +15,14 @@ SOURCE_DIR="$DOTFILES_ROOT/home"
   assert_success
 }
 
+@test "install-apm template gates library injection to darwin" {
+  template_content="$(<"$TMPL")"
+
+  [[ "$template_content" == *'{{ if eq .chezmoi.os "darwin" }}'* ]] || return 1
+  [[ "$template_content" == *'{{ template "lib/common/log.sh" . }}'* ]] || return 1
+  [[ "$template_content" == *'{{ template "lib/install/apm.sh" . }}'* ]] || return 1
+}
+
 @test "install-apm template injects log_info, log_warn, log_error definitions" {
   run mise exec -- chezmoi execute-template --source "$SOURCE_DIR" <"$TMPL"
   assert_success
