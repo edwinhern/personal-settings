@@ -33,5 +33,19 @@ lint:
 validate:
 	./scripts/compile.sh
 
+.PHONY: test
+test:
+	mise exec -- bats --recursive tests/unit tests/template
+
 .PHONY: check
-check: lint validate
+check: lint validate test
+
+# --- scoped test targets (for fast iteration) ---
+
+.PHONY: test-unit
+test-unit:
+	mise exec -- bats --recursive tests/unit
+
+.PHONY: test-template
+test-template:
+	mise exec -- bats --recursive tests/template
