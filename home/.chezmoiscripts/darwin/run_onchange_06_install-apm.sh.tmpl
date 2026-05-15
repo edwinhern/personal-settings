@@ -9,18 +9,20 @@
 
 set -e
 
+{{ template "lib/common/log.sh" . }}
+
 # apm install --global reads apm.yml from ~/.apm/apm.yml and deploys to each
 # target's user-scope directory (Claude → ~/.claude/, Copilot → ~/.copilot/).
 # Targets are declared in apm.yml as `target: [claude, copilot]`, so no --target
 # flag is needed here. Skills auto-converge into ~/.agents/skills/ regardless.
 # https://microsoft.github.io/apm/reference/targets-matrix/
-echo "[apm] Installing globally from ~/.apm/apm.yml..."
+log_info "[apm] Installing globally from ~/.apm/apm.yml..."
 cd ~/.apm
 
 # MCP servers using ${input:...} interactive prompts (e.g. github-token) fail
 # under chezmoi's non-interactive shell. APM integrates agents/skills/rules
 # before the MCP step, so a non-zero exit here doesn't lose the deployment.
 # Bitwarden integration is the planned long-term fix (roadmap in PROGRESS.md).
-apm install --global || echo "[apm] apm install exited with errors (likely MCP token prompts in non-interactive shell)"
+apm install --global || log_warn "[apm] apm install exited with errors (likely MCP token prompts in non-interactive shell)"
 
-echo "[apm] Install complete."
+log_info "[apm] Install complete."
