@@ -16,6 +16,12 @@ DARWIN_DATA='{"chezmoi":{"os":"darwin"}}'
   assert_success
 }
 
+@test "rendered install-apm script starts with bash shebang" {
+  run mise exec -- chezmoi execute-template --source "$SOURCE_DIR" --override-data "$DARWIN_DATA" <"$TMPL"
+  assert_success
+  [ "${lines[0]}" = "#!/usr/bin/env bash" ]
+}
+
 @test "install-apm template gates library injection to darwin" {
   template_content="$(<"$TMPL")"
 

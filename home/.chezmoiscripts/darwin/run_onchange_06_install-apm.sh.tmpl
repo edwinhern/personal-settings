@@ -1,4 +1,5 @@
-{{- $src := .chezmoi.sourceDir }}
+#!/usr/bin/env bash
+{{ $src := .chezmoi.sourceDir }}
 # apm.yml:       {{ include "dot_apm/apm.yml.tmpl" | sha256sum }}
 # apm.lock.yaml: {{ include "dot_apm/apm.lock.yaml" | sha256sum }}
 # agents:        {{ range (glob (printf "%s/dot_apm/dot_apm/agents/*" $src)) }}{{ include (trimPrefix (printf "%s/" $src) .) | sha256sum }} {{ end }}
