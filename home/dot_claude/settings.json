@@ -80,7 +80,8 @@
   "alwaysThinkingEnabled": true,
   "statusLine": {
     "type": "command",
-    "command": "npx ccstatusline@latest"
+    "command": "sh ~/.claude/statusline-command.sh",
+    "padding": 0
   },
   "enabledPlugins": {
     "superwhisper@superwhisper": true
