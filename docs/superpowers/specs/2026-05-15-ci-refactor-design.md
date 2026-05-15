@@ -1,8 +1,12 @@
 # CI Refactor + Shell Testing Design
 
-**Status:** Brainstorm in progress — Section 2 of 4 approved. Sections 3 and 4 deferred to next session.
+**Status:** PR #10 open for first migration slice. Bats framework bootstrap is implemented and CI is green.
 
-**Branch:** `feat/ci-refactor`
+**Branch:** `feat/ci-bats`
+
+**PR:** [#10 Bootstrap bats framework for shell testing](https://github.com/edwinhern/dotfiles/pull/10)
+
+**Current PR scope:** Adds mise-pinned bats-core, vendored bats companion libraries, statusline fixtures, `tests/unit/statusline.bats`, and Make targets for `test`, `test-unit`, and `test-template`. `make check` now includes bats tests.
 
 **Reference:** [shunk031/dotfiles](https://github.com/shunk031/dotfiles) — pattern source.
 
@@ -155,7 +159,7 @@ Resume by reading these in their repo:
 3. **Their `Makefile` test wiring** — fully view how bats gets invoked across local + CI + docker.
 4. **`bats_load_library` mechanism** — how shunk031 loads companion libs (vs our vendoring approach). May simplify if mise can install bats-assert too.
 
-## Open design questions (deferred to next session)
+## Open design questions (deferred)
 
 ### Section 3 — CI workflow refactor (not yet designed)
 
@@ -177,27 +181,32 @@ Capture the new pattern as a documented convention:
 - `make test` / `make test-unit` / `make test-template` workflow.
 - Pure-shell rule (no Go template syntax in lib files).
 
-### Migration plan
+## Migration plan
 
-Sequence for first PR:
+### PR #10 - bats framework bootstrap
 
-1. Add `.mise.toml` pinning current toolchain versions.
-2. Vendor bats companion libs under `tests/test_helpers/`.
-3. Create `tests/helpers/load.bash` and `tests/fixtures/` skeleton.
-4. Add `make test` target.
-5. Write the first bats test: `tests/unit/statusline.bats` (formalize the mock-payload tests we ran manually during the rewrite).
-6. CI: add a `test` job that runs `make test`.
+- [x] Add `.mise.toml` pinning current toolchain versions, including bats-core.
+- [x] Vendor `bats-support`, `bats-assert`, and `bats-file` under `tests/test_helpers/`.
+- [x] Add `tests/test_helpers/load.bash`.
+- [x] Add statusline fixtures under `tests/fixtures/statusline/`.
+- [x] Add `make test`, `make test-unit`, and `make test-template` targets.
+- [x] Add the first bats test suite: `tests/unit/statusline.bats`.
+- [x] Include bats tests in `make check`.
+- [x] Open PR #10 against `main` from `feat/ci-bats`.
+- [x] Confirm PR #10 CI is green.
 
-Steps 7+ (extracting library code from `06_install-apm.sh.tmpl`, adding composite actions, splitting workflows, etc.) follow in subsequent PRs.
-
-## Resume checklist for next session
+### Remaining work after PR #10
 
 - [ ] Read `tests/install/common/*.bats` from shunk031/dotfiles for concrete test style.
 - [ ] Read `.github/workflows/test.yaml` in full from shunk031/dotfiles.
 - [ ] Read shunk031's Makefile test wiring in full.
-- [ ] Verify whether `bats_load_library` or mise can replace vendoring of bats-assert/file/support.
-- [ ] Design Section 3 (CI workflow refactor — composite actions, caching, splitting).
-- [ ] Design Section 4 (CLAUDE.md update).
-- [ ] Self-review the spec.
-- [ ] User reviews spec.
-- [ ] Hand off to `writing-plans` skill.
+- [ ] Verify whether `bats_load_library` or mise can replace vendoring of bats-assert/file/support in a future PR.
+- [ ] Design Section 3: CI workflow refactor with composite actions, caching, workflow shape, and changes gating.
+- [ ] Design Section 4: CLAUDE.md documentation update.
+- [ ] Extract reusable shell code from `06_install-apm.sh.tmpl` into `home/.chezmoitemplates/lib/`.
+- [ ] Add bats unit tests for extracted shell libraries.
+- [ ] Add template rendering tests for chezmoi/APM outputs.
+- [ ] Add or revise CI jobs to run the expanded bats suite.
+- [ ] Self-review the updated spec before each implementation PR.
+- [ ] User reviews spec before the next migration slice.
+- [ ] Hand off the next implementation slice to `writing-plans` skill.
