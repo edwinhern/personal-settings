@@ -9,3 +9,11 @@ insert_final_newline = true
 
 [Makefile]
 indent_style = tab
+
+# shfmt reads .editorconfig natively. shell_variant = bash matches the
+# `--shell bash` rule in .shellcheckrc so both tools parse the same dialect.
+# The braced alternation covers both extension files (*.sh, *.zsh, *.bash)
+# and extensionless rc files (.zshrc, .bashrc, .bash_profile, .profile)
+# that scripts/lint.sh collects via the same find clause.
+[{*.sh,*.zsh,*.bash,.zshrc,.bashrc,.bash_profile,.profile}]
+shell_variant = bash
