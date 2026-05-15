@@ -1,0 +1,17 @@
+name: Write chezmoi config
+description: Write the CI chezmoi config for a personal or work context.
+
+inputs:
+  context:
+    description: "Context to render: personal or work."
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Write chezmoi config
+      shell: bash
+      env:
+        CONTEXT: ${{ inputs.context }}
+      run: |
+        "$GITHUB_ACTION_PATH/write-chezmoi-config.sh" "$CONTEXT"

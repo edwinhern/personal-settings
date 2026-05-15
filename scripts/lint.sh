@@ -5,12 +5,14 @@ set -eu
 # check format Markdown and YAML files.
 mise exec -- prettier --check --ignore-unknown \
   "**/*.md" \
-  "**/*.yaml"
+  "**/*.yml" \
+  "**/*.yaml" \
+  "!tests/test_helpers/**"
 
 printf "* %s\n" "Linting shell scripts..."
 
-# Collect shell targets from scripts/ and home/dot_config/zsh/
-SH_TARGETS=$(find scripts home/dot_config/zsh -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
+# Collect shell targets from scripts/, home/dot_config/zsh/, and .github/actions/.
+SH_TARGETS=$(find scripts home/dot_config/zsh .github/actions -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
 
 # check format Shell scripts (bash dialect covers posix + zsh constructs).
 # shellcheck disable=SC2086

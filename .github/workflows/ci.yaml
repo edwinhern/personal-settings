@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: "0 0 * * 5"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint shell scripts, markdown, and YAML
@@ -18,7 +22,7 @@ jobs:
       - run: make lint
 
   validate_apm:
-    name: Validate APM config (dry-run, ${{ matrix.context }})
+    name: Validate APM config (${{ matrix.context }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,21 +33,10 @@ jobs:
       - uses: jdx/mise-action@v4
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
-      - name: Install APM
-        run: curl -sSL https://aka.ms/apm-unix | sh
       - name: Stub chezmoi config (${{ matrix.context }} context)
-        run: |
-          mkdir -p "$HOME/.config/chezmoi"
-          cat > "$HOME/.config/chezmoi/chezmoi.yaml" <<'EOF'
-          data:
-            hostname: ci-runner
-            personal: ${{ matrix.context == 'personal' }}
-            work: ${{ matrix.context == 'work' }}
-            git:
-              name: CI Bot
-              email: ci@example.com
-            atlassian_resource_url: "https://example.atlassian.net"
-          EOF
+        uses: ./.github/actions/write-chezmoi-config
+        with:
+          context: ${{ matrix.context }}
       - name: Render apm.yml from template
         run: |
           mkdir -p "$HOME/.apm"
@@ -51,9 +44,14 @@ jobs:
           cp home/dot_apm/apm.lock.yaml "$HOME/.apm/apm.lock.yaml"
           cp -r home/dot_apm/dot_apm "$HOME/.apm/.apm"
       - name: Dry-run apm install
+        run: mise exec -- apm install --dry-run --global
+      - name: Audit APM project
         run: |
-          cd "$HOME/.apm"
-          apm install --dry-run --global
+          apm_project="$(mktemp -d)"
+          cp "$HOME/.apm/apm.yml" "$apm_project/apm.yml"
+          cp "$HOME/.apm/apm.lock.yaml" "$apm_project/apm.lock.yaml"
+          cp -r "$HOME/.apm/.apm" "$apm_project/.apm"
+          mise exec -- sh -c "cd \"${apm_project}\" && apm install && apm audit --ci --no-drift --no-policy"
 
   actions_lint:
     name: Lint GitHub Actions workflows
@@ -76,21 +74,20 @@ jobs:
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
       - name: Stub chezmoi config (${{ matrix.context }} context)
-        run: |
-          mkdir -p "$HOME/.config/chezmoi"
-          cat > "$HOME/.config/chezmoi/chezmoi.yaml" <<'EOF'
-          data:
-            hostname: ci-runner
-            personal: ${{ matrix.context == 'personal' }}
-            work: ${{ matrix.context == 'work' }}
-            git:
-              name: CI Bot
-              email: ci@example.com
-            atlassian_resource_url: "https://example.atlassian.net"
-          EOF
+        uses: ./.github/actions/write-chezmoi-config
+        with:
+          context: ${{ matrix.context }}
       - name: Dry-run apply
         run: |
           "$HOME/.local/bin/chezmoi" apply \
             --source "$PWD" \
             -n \
             -v
+
+  test:
+    name: Run bats tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
+      - run: make test
