@@ -34,8 +34,7 @@ validate:
 	./scripts/compile.sh
 
 .PHONY: test
-test:
-	mise exec -- bats --recursive tests/unit tests/template
+test: test-unit test-template
 
 .PHONY: check
 check: lint validate test
@@ -48,4 +47,8 @@ test-unit:
 
 .PHONY: test-template
 test-template:
-	mise exec -- bats --recursive tests/template
+	@if [ -d tests/template ]; then \
+		mise exec -- bats --recursive tests/template; \
+	else \
+		printf "%s\n" "No template tests found."; \
+	fi

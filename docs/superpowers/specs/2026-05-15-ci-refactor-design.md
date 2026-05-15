@@ -1,12 +1,12 @@
 # CI Refactor + Shell Testing Design
 
-**Status:** PR #10 open for first migration slice. Bats framework bootstrap is implemented and CI is green.
+**Status:** PR #10 merged. Bats framework bootstrap is on `main`; Section 3 is now designed for the next CI refactor slice.
 
-**Branch:** `feat/ci-bats`
+**Branch:** `main`
 
 **PR:** [#10 Bootstrap bats framework for shell testing](https://github.com/edwinhern/dotfiles/pull/10)
 
-**Current PR scope:** Adds mise-pinned bats-core, vendored bats companion libraries, statusline fixtures, `tests/unit/statusline.bats`, and Make targets for `test`, `test-unit`, and `test-template`. `make check` now includes bats tests.
+**Merged PR #10 scope:** Added mise-pinned bats-core, vendored bats companion libraries, statusline fixtures, `tests/unit/statusline.bats`, and Make targets for `test`, `test-unit`, and `test-template`. `make check` now includes bats tests.
 
 **Reference:** [shunk031/dotfiles](https://github.com/shunk031/dotfiles) — pattern source.
 
@@ -20,7 +20,7 @@ Current `.github/workflows/ci.yaml` has accumulated friction:
 4. One monolithic workflow with four jobs of mixed concerns.
 5. Ad-hoc `curl | sh` installs of chezmoi and APM repeated across jobs.
 
-Secondary friction: the repo has no `.mise.toml` or `.tool-versions`, so toolchain versions in CI float to whatever mise's registry defaults to.
+Resolved in PR #10: `mise.toml` now pins the shell and agent toolchain, including APM.
 
 **Primary goal:** maintainability / best practices. Secondary goal: better coverage via shell-level unit tests. Speed is fine as-is.
 
@@ -56,13 +56,13 @@ Consuming `.chezmoiscripts/*.tmpl` files pull in lib content via:
 
 **Toolchain:**
 
-- bats-core pinned via `.mise.toml` (alongside existing shellcheck/shfmt/taplo/prettier).
+- bats-core pinned via `mise.toml` (alongside APM, shellcheck, shfmt, taplo, and prettier).
 - `bats-support`, `bats-assert`, `bats-file` vendored under `tests/test_helpers/`. Small (~100 KB total), stable, removes network dependency for tests.
 
 **Layout:**
 
 ```
-.mise.toml                        # NEW — pins all shell toolchain versions
+mise.toml                         # pins shell and agent toolchain versions
 
 tests/
 ├── test_helpers/
@@ -134,21 +134,21 @@ load '../test_helpers/load.bash'
 }
 ```
 
-### 3. `.mise.toml` (NEW — required by testing setup)
+### 3. `mise.toml` (landed in PR #10)
 
-Pin all shell toolchain so CI and local development agree:
+Pin shell and agent toolchain so CI and local development agree:
 
 ```toml
 [tools]
-bats        = "1.11.0"
-shellcheck  = "0.10.0"
-shfmt       = "3.10.0"
-taplo       = "0.9.3"
-node        = "lts"
-prettier    = "3.3.3"
+"github:microsoft/apm" = "0.13.0"
+bats = "1.13.0"
+prettier = "3.8.3"
+shellcheck = "0.11.0"
+shfmt = "3.13.1"
+taplo = "0.10.0"
 ```
 
-Exact versions TBD — first commit pins to whatever is currently installed locally.
+`mise.toml` is the source of truth for APM versioning in CI. Workflow YAML should not hardcode `apm-version` unless the repo intentionally adopts an APM Action feature that requires it.
 
 ## Patterns to study from shunk031/dotfiles
 
@@ -159,18 +159,109 @@ Resume by reading these in their repo:
 3. **Their `Makefile` test wiring** — fully view how bats gets invoked across local + CI + docker.
 4. **`bats_load_library` mechanism** — how shunk031 loads companion libs (vs our vendoring approach). May simplify if mise can install bats-assert too.
 
+## Section 3 - CI workflow refactor design
+
+### Scope for next PR
+
+Keep `.github/workflows/ci.yaml` as a single workflow for the next slice. The next PR should reduce duplicated setup and make CI use the same tool versions as local development. Do not split workflows or add changes gating yet; those are easier to reason about after the repeated setup is extracted.
+
+### Toolchain setup
+
+Use `jdx/mise-action@v4` as the CI toolchain entrypoint and run APM through mise:
+
+```yaml
+- uses: jdx/mise-action@v4
+
+- name: Dry-run apm install
+  run: mise exec -- apm install --dry-run --global
+```
+
+`mise.toml` pins APM as `"github:microsoft/apm" = "0.13.0"`, so CI should not duplicate that version in workflow YAML.
+
+### APM Action decision
+
+Do not use `microsoft/apm-action@v1` in the next slice. The official action is valuable, but this repo already gets version control from `mise.toml` and currently has no need for the action-specific features.
+
+Use `microsoft/apm-action@v1` later if one of these becomes part of the CI design:
+
+- SARIF output via `audit-report` and GitHub Code Scanning.
+- Pack/restore workflows for sharing agent primitives across jobs.
+- GitHub token forwarding for private or cross-org APM dependencies.
+- APM bundle restore mode.
+
+If the action is adopted later, decide first how to avoid version drift between `mise.toml` and the action's `apm-version` input.
+
+### Chezmoi config setup
+
+Extract the duplicated chezmoi config heredoc from `validate_apm` and `chezmoi_dry_run` into one composite action:
+
+```
+.github/actions/write-chezmoi-config/action.yml
+```
+
+Inputs:
+
+- `context`: `personal` or `work`.
+
+Behavior:
+
+- Writes `$HOME/.config/chezmoi/chezmoi.yaml`.
+- Sets `personal` and `work` booleans from the `context` input.
+- Keeps the same CI stub values for hostname, git identity, and Atlassian resource URL.
+
+This is the highest-value extraction because it removes repeated YAML while keeping job behavior unchanged.
+
+### Chezmoi install setup
+
+Keep manual chezmoi install for the next PR unless it becomes noisy during implementation. A separate `.github/actions/setup-chezmoi/` action can follow if the install remains repeated after the config extraction.
+
+### APM validation
+
+Keep the current rendered APM project shape for now:
+
+1. Render `home/dot_apm/apm.yml.tmpl` into `$HOME/.apm/apm.yml`.
+2. Copy `home/dot_apm/apm.lock.yaml` into `$HOME/.apm/apm.lock.yaml`.
+3. Copy `home/dot_apm/dot_apm` into `$HOME/.apm/.apm`.
+4. Run `mise exec -- apm install --dry-run --global` from `$HOME/.apm`.
+
+Add baseline audit in the same job after rendering the project. Because this repo validates a user-scope `$HOME/.apm` project, audit should run against a scratch local project copied from the rendered files:
+
+```yaml
+- name: Audit APM project
+  run: |
+    apm_project="$(mktemp -d)"
+    cp "$HOME/.apm/apm.yml" "$apm_project/apm.yml"
+    cp "$HOME/.apm/apm.lock.yaml" "$apm_project/apm.lock.yaml"
+    cp -r "$HOME/.apm/.apm" "$apm_project/.apm"
+    mise exec -- sh -c "cd \"${apm_project}\" && apm install && apm audit --ci --no-drift --no-policy"
+```
+
+Keep `apm install --dry-run --global` because it validates the user-scope install path this dotfiles repo actually uses. The scratch audit provides lockfile and content checks, but uses `--no-drift` because full drift replay currently reports local included files as orphaned after APM integration. It also uses `--no-policy` because org policy governance is deferred.
+
+### Bats test job
+
+Add a dedicated CI job that runs the bats suite:
+
+```yaml
+test:
+  name: Run bats tests
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
+    - uses: jdx/mise-action@v4
+    - run: make test
+```
+
+Keep `make check` as the local all-in-one command. CI should run `make lint`, APM validation, chezmoi dry-run, actionlint, and `make test` as separate jobs so failures point to the right concern.
+
+### Deferred CI design
+
+- Split `ci.yaml` into `lint.yaml`, `validate.yaml`, and `test.yaml` only after the setup duplication is gone.
+- Add changes gating only after the workflow shape is smaller. Candidate skip rules: docs-only changes can skip APM and chezmoi dry-runs, but should still run markdown lint.
+- Add caching only after measuring repeated setup time. Candidate caches: mise tools and APM modules.
+- Add APM SARIF or org policy checks only after deciding whether this repo needs Code Scanning alerts or an `apm-policy.yml` governance layer.
+
 ## Open design questions (deferred)
-
-### Section 3 — CI workflow refactor (not yet designed)
-
-- **Composite actions:** what shape? Candidates:
-  - `.github/actions/setup-toolchain/` — installs mise + cached toolchain.
-  - `.github/actions/setup-chezmoi/` — installs chezmoi + writes stub config.
-  - `.github/actions/setup-apm/` — installs APM.
-- **Workflow splitting:** single `ci.yaml` with composite actions, or split into `lint.yaml` / `validate.yaml` / `test.yaml`? Shunk031 splits by OS (`macos.yaml`, `ubuntu.yaml`, `remote.yaml`, `test.yaml`).
-- **Caching:** `actions/cache` keys for mise data, APM modules, chezmoi binary.
-- **`changes` gating job:** borrow shunk031's pattern? Skip heavy tests when only `docs/` changed.
-- **Where the new `test` job lives:** runs `make test` after lint passes.
 
 ### Section 4 — CLAUDE.md documentation update
 
@@ -183,9 +274,9 @@ Capture the new pattern as a documented convention:
 
 ## Migration plan
 
-### PR #10 - bats framework bootstrap
+### PR #10 - bats framework bootstrap (merged)
 
-- [x] Add `.mise.toml` pinning current toolchain versions, including bats-core.
+- [x] Add `mise.toml` pinning current toolchain versions, including APM and bats-core.
 - [x] Vendor `bats-support`, `bats-assert`, and `bats-file` under `tests/test_helpers/`.
 - [x] Add `tests/test_helpers/load.bash`.
 - [x] Add statusline fixtures under `tests/fixtures/statusline/`.
@@ -194,19 +285,34 @@ Capture the new pattern as a documented convention:
 - [x] Include bats tests in `make check`.
 - [x] Open PR #10 against `main` from `feat/ci-bats`.
 - [x] Confirm PR #10 CI is green.
+- [x] Merge PR #10 into `main`.
 
-### Remaining work after PR #10
+### Next PR - CI setup refactor
+
+- [ ] Add `.github/actions/write-chezmoi-config/action.yml` with a `context` input.
+- [ ] Replace duplicated chezmoi config heredocs in `validate_apm` and `chezmoi_dry_run`.
+- [ ] Remove manual APM `curl` install from CI.
+- [ ] Run APM commands through mise so `mise.toml` remains the version source of truth.
+- [ ] Keep rendered `$HOME/.apm` project setup unchanged.
+- [ ] Keep `apm install --dry-run --global` for the initial refactor.
+- [ ] Add baseline `apm audit --ci` after the rendered APM project is prepared.
+- [ ] Add a dedicated `test` job that runs `make test`.
+- [ ] Verify the full workflow stays green for personal and work contexts.
+
+### Later PRs
 
 - [ ] Read `tests/install/common/*.bats` from shunk031/dotfiles for concrete test style.
 - [ ] Read `.github/workflows/test.yaml` in full from shunk031/dotfiles.
 - [ ] Read shunk031's Makefile test wiring in full.
 - [ ] Verify whether `bats_load_library` or mise can replace vendoring of bats-assert/file/support in a future PR.
-- [ ] Design Section 3: CI workflow refactor with composite actions, caching, workflow shape, and changes gating.
 - [ ] Design Section 4: CLAUDE.md documentation update.
+- [ ] Decide whether APM Action features are needed: SARIF, pack/restore, token forwarding, or bundle restore.
+- [ ] Decide whether this repo needs `apm audit --ci --policy org` and an `apm-policy.yml` governance layer.
 - [ ] Extract reusable shell code from `06_install-apm.sh.tmpl` into `home/.chezmoitemplates/lib/`.
 - [ ] Add bats unit tests for extracted shell libraries.
 - [ ] Add template rendering tests for chezmoi/APM outputs.
-- [ ] Add or revise CI jobs to run the expanded bats suite.
+- [ ] Split CI workflows or add changes gating after setup duplication is removed.
+- [ ] Add caching after measuring repeated setup time.
 - [ ] Self-review the updated spec before each implementation PR.
 - [ ] User reviews spec before the next migration slice.
 - [ ] Hand off the next implementation slice to `writing-plans` skill.
