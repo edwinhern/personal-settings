@@ -8,7 +8,7 @@ set -eu
 # taplo reads taplo.toml.
 
 # Collect shell targets for shfmt. Scope mirrors scripts/lint.sh.
-SH_TARGETS=$(find scripts home/dot_config/zsh .github/actions -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
+SH_TARGETS=$(find scripts home/dot_config/zsh home/.chezmoitemplates .github/actions -type f \( -name '*.sh' -o -name '*.zsh' -o -name '.zshrc' \))
 
 # shellcheck disable=SC2086
 mise exec -- shfmt --write ${SH_TARGETS}
