@@ -159,27 +159,27 @@ echo "[apm] Install complete."
 
 ## Roadmap (Future)
 
-| Item                             | Notes                                                                                                                                                                           |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Bitwarden secrets pipeline**   | Replace `${input:figma-token}` and similar APM prompts with values sourced from Bitwarden. Likely shape: chezmoi-managed `private_secrets.local.tmpl` rendered with `{{ bitwardenFields ... }}`, sourced by `06_install-apm.sh` before `apm install`. Open design question: does APM honor env vars as `${input:...}` fallback? Needs dedicated brainstorm. |
-| ✅ **GitHub Actions CI for APM (initial)** | `validate_apm` + `chezmoi_dry_run` jobs render `apm.yml.tmpl` via chezmoi + run `apm install --dry-run --global` for personal and work contexts. All jobs green. Refactor pending (see row below).                              |
-| **CI / GitHub Actions refactor** | Current `.github/workflows/ci.yaml` has duplicated chezmoi-config stubs across jobs, inline `cp` plumbing in `validate_apm`, no caching of mise/chezmoi/APM binaries, and ad-hoc `curl` installs. Candidates: composite actions for repeated setup, `actions/cache` for binaries, splitting workflows by concern (lint vs apply vs install-test). Needs dedicated brainstorm. |
-| **Business package**             | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                                       |
-| **Reduce lint toolchain**        | Currently 4 tools: prettier, shellcheck, shfmt, taplo. `taplo` (TOML) is most optional. `shfmt` overlaps with shellcheck but handles formatting. Evaluate dropping taplo first. |
+| Item                                       | Notes                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bitwarden secrets pipeline**             | Replace `${input:figma-token}` and similar APM prompts with values sourced from Bitwarden. Likely shape: chezmoi-managed `private_secrets.local.tmpl` rendered with `{{ bitwardenFields ... }}`, sourced by `06_install-apm.sh` before `apm install`. Open design question: does APM honor env vars as `${input:...}` fallback? Needs dedicated brainstorm.                   |
+| ✅ **GitHub Actions CI for APM (initial)** | `validate_apm` + `chezmoi_dry_run` jobs render `apm.yml.tmpl` via chezmoi + run `apm install --dry-run --global` for personal and work contexts. All jobs green. Refactor pending (see row below).                                                                                                                                                                            |
+| **CI / GitHub Actions refactor**           | Current `.github/workflows/ci.yaml` has duplicated chezmoi-config stubs across jobs, inline `cp` plumbing in `validate_apm`, no caching of mise/chezmoi/APM binaries, and ad-hoc `curl` installs. Candidates: composite actions for repeated setup, `actions/cache` for binaries, splitting workflows by concern (lint vs apply vs install-test). Needs dedicated brainstorm. |
+| **Business package**                       | Separate `packages/business/` with its own `apm.yml` and `.apm/` for business-context agents/instructions                                                                                                                                                                                                                                                                     |
+| **Reduce lint toolchain**                  | Currently 4 tools: prettier, shellcheck, shfmt, taplo. `taplo` (TOML) is most optional. `shfmt` overlaps with shellcheck but handles formatting. Evaluate dropping taplo first.                                                                                                                                                                                               |
 
 ---
 
 ## What `apm install` Creates (Reference)
 
-| Path                    | Contents                             | Keep?                 |
-| ----------------------- | ------------------------------------ | --------------------- |
-| `.claude/agents/`       | Your agent files                     | ✓ (target output)     |
-| `.claude/rules/`        | Your instruction files               | ✓                     |
-| `.claude/skills/`       | All skills (superpowers + custom)    | ✓                     |
-| `.claude/settings.json` | Superpowers session hooks            | ✓                     |
-| `.agents/`              | Cross-tool skill copy                | Ignore (gitignore it) |
-| `.github/`              | Copilot output (if detected)         | On work machines only |
-| `apm_modules/`          | Dependency cache (like node_modules) | Gitignore always      |
+| Path                    | Contents                                                   | Keep?                                                                                                               |
+| ----------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `.claude/agents/`       | Your agent files                                           | ✓ (target output)                                                                                                   |
+| `.claude/rules/`        | Your instruction files                                     | ✓                                                                                                                   |
+| `.claude/skills/`       | All skills (superpowers + custom)                          | ✓                                                                                                                   |
+| `.claude/settings.json` | Superpowers session hooks                                  | ✓                                                                                                                   |
+| `.agents/`              | Cross-tool skill copy                                      | Ignore (gitignore it)                                                                                               |
+| `.github/`              | Copilot output (if detected)                               | On work machines only                                                                                               |
+| `apm_modules/`          | Dependency cache (like node_modules)                       | Gitignore always                                                                                                    |
 | `apm.lock.yaml`         | Pinned commit hashes (regenerated by APM on every install) | Tracked in source for CI seeding; listed in `home/.chezmoiignore` so chezmoi's apply pass ignores destination drift |
 
 `CLAUDE.md` is **not** created by APM — manage separately.
