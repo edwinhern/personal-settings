@@ -11,10 +11,6 @@ dependencies:
     - obra/superpowers
     - anthropics/claude-plugins-official/plugins/skill-creator
   mcp:
-    - name: io.github.github/github-mcp-server
-      env:
-        GITHUB_PERSONAL_ACCESS_TOKEN: "${input:github-token}"
-
 {{ if .work }}
     - name: figma
       registry: false

@@ -3,18 +3,26 @@
   "model": "opusplan",
   "cleanupPeriodDays": 365,
   "env": {
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4.7",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4.6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-7[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-opus-4-7",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-4-6",
     "BASH_DEFAULT_TIMEOUT_MS": "300000",
     "BASH_MAX_TIMEOUT_MS": "600000",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-4.6",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "400000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "auto",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-4-6",
     "CLAUDE_CODE_ATTRIBUTION_HEADER": "0",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "45000",
     "CLAUDE_CODE_NO_FLICKER": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-    "DISABLE_TELEMETRY": "1"
+    "DISABLE_TELEMETRY": "1",
+    "ENABLE_PROMPT_CACHING_1H": "1",
+    "MAX_MCP_OUTPUT_TOKENS": "40000"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -78,6 +86,13 @@
     "defaultMode": "plan"
   },
   "alwaysThinkingEnabled": true,
+  "autoScrollEnabled": false,
+  "autoUpdatesChannel": "latest",
+  "autoMemoryEnabled": true,
+  "outputStyle": "Explanatory",
+  "showThinkingSummaries": true,
+  "spinnerTipsEnabled": false,
+  "skillListingBudgetFraction": 0.02,
   "statusLine": {
     "type": "command",
     "command": "sh ~/.claude/statusline-command.sh",
@@ -87,11 +102,26 @@
     "superwhisper@superwhisper": true
   },
   "extraKnownMarketplaces": {
-     "superwhisper": {
+    "superwhisper": {
       "source": {
         "source": "github",
         "repo": "superultrainc/superwhisper-claude-code"
       }
     }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" session-start",
+            "async": false
+          }
+        ],
+        "_apm_source": "superpowers"
+      }
+    ]
   }
 }
