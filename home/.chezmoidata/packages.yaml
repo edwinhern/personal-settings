@@ -18,6 +18,7 @@ packages:
           - mise
           - starship
           - tmux
+          - ripgrep
         casks:
           # fonts
           - font-monaspace
