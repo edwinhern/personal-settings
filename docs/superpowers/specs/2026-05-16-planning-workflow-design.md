@@ -1,6 +1,6 @@
 # Planning Workflow Design
 
-**Status:** Draft for review.
+**Status:** Approved for implementation.
 
 **Branch:** `main`
 
@@ -67,11 +67,17 @@ Views:
 - `By area`: open issues grouped by area
 - `Done`: recently completed work
 
+### opencode Permissions
+
+`home/dot_config/opencode/opencode.jsonc` should allow targeted `gh` commands for issue, label, and project management so agents can maintain the tracker without repeated prompts.
+
+Allowed project operations are create, link, field creation, item add, and item edit. Destructive project operations should remain ask or deny.
+
 ### Superpowers Docs
 
 `docs/superpowers/specs/` stores approved designs. `docs/superpowers/plans/` stores implementation plans created from specs.
 
-These files are not the backlog. They are linked from issues when deeper design or step-by-step implementation detail is useful.
+These files are tracked supporting artifacts, not the backlog. Task issues require a linked Superpowers spec or plan before implementation starts.
 
 ### `docs/PROGRESS.md`
 
@@ -96,10 +102,10 @@ Initial migration should be small:
 
 - Create the `dotfiles` GitHub Project.
 - Add area labels and `priority:high`.
-- Add issue templates for bugs and general tasks.
+- Add issue templates for bugs and general tasks. The task template requires a linked Superpowers spec or plan.
+- Add opencode permissions for issue, label, and project management.
 - Convert unfinished items from `docs/PROGRESS.md` and the CI refactor spec into issues.
 - Remove `docs/PROGRESS.md` once unfinished work is captured elsewhere.
-- Add a short docs pointer that explains where planning lives.
 
 Potential initial issues:
 
