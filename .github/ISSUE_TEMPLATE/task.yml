@@ -30,6 +30,17 @@ body:
         - Editor
     validations:
       required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this task for the repo right now?
+      options:
+        - High
+        - Normal
+        - Low
+    validations:
+      required: true
   - type: textarea
     id: acceptance-checks
     attributes:

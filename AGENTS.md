@@ -21,6 +21,17 @@
 - Do not use `docs/` as the issue tracker, roadmap, or long-lived backlog.
 - Superpowers specs and plans live under `docs/superpowers/` and should be linked from the related GitHub issue.
 
+## Task Selection
+
+- Use the `dotfiles` project `Priority` field to choose the next task: `High`, then `Normal`, then `Low`.
+- `High` means security, reproducibility, broken workflow, or work that unlocks important follow-up work.
+- `Normal` means useful cleanup, maintenance, or decision work with clear value but no current breakage.
+- `Low` means speculative, optional, or only worth doing when current pain appears.
+- If priority is missing, set or ask for the priority before implementation starts.
+- When priorities tie, prefer security and reproducibility work first, then blockers, then the smallest clear issue.
+- Do not add story points unless the user explicitly asks for them.
+- When starting work, move the selected issue to `In Progress` and link the relevant Superpowers spec or plan before code changes.
+
 ## Agent Work Tracking
 
 - When new work is discovered, create or update a GitHub issue instead of adding a backlog item under `docs/`.
