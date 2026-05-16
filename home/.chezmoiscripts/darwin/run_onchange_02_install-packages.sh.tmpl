@@ -1,24 +1,12 @@
-{{- if eq .chezmoi.os "darwin" -}}
-{{- /* `shared` always applies; add exactly one of personal/work based on host context. */ -}}
-{{- $groups := list "shared" -}}
-{{- if .personal }}{{ $groups = append $groups "personal" }}{{ end -}}
-{{- if .work     }}{{ $groups = append $groups "work"     }}{{ end -}}
-#!/bin/bash
-# .chezmoiscripts/darwin/run_onchange_02_install-packages.sh.tmpl
-# Runs brew bundle from packages.yaml data.
-# Reruns automatically whenever packages.yaml changes.
-#
+#!/usr/bin/env bash
+{{ $groups := list "shared" }}
+{{ if .personal }}{{ $groups = append $groups "personal" }}{{ end }}
+{{ if .work     }}{{ $groups = append $groups "work"     }}{{ end }}
 # packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
-set -euo pipefail
 
-if ! command -v brew &>/dev/null; then
-  echo "Homebrew not found — ensure run_once_01_install-homebrew ran successfully."
-  exit 1
-fi
-
-echo "Running brew bundle..."
-
-brew bundle --file=/dev/stdin <<'BREWFILE'
+{{ if eq .chezmoi.os "darwin" }}
+{{ template "lib/common/log.sh" . }}
+HOMEBREW_BUNDLE_CONTENT=$(cat <<'BREWFILE'
 {{ range $groups }}# {{ . }}
 {{- $g := index $.packages.darwin.homebrew . }}
 {{ range $g.taps }}tap "{{ . }}"
@@ -31,6 +19,6 @@ brew bundle --file=/dev/stdin <<'BREWFILE'
 {{ end }}
 {{ end -}}
 BREWFILE
-
-echo "Packages installed."
-{{- end }}
+)
+{{ template "lib/install/homebrew-bundle.sh" . }}
+{{ end }}
