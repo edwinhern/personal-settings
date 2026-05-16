@@ -1,14 +1,15 @@
 # CI Refactor + Shell Testing Design
 
-**Status:** PRs #10, #12, #13 merged. Library extraction + shell coverage is the next slice (in flight on `ci/lib-extraction`).
+**Status:** PRs #10, #12, #13, #14 merged. Library extraction + shell coverage is complete.
 
-**Branch:** `ci/lib-extraction`
+**Branch:** `main`
 
 **Merged PRs:**
 
 - [#10 Bootstrap bats framework for shell testing](https://github.com/edwinhern/dotfiles/pull/10) — mise-pinned bats-core, vendored companion libs, statusline tests, `make test` targets.
 - [#12 Refactor CI setup with composite action and APM audit](https://github.com/edwinhern/dotfiles/pull/12) — `write-chezmoi-config` composite action, mise-managed APM, `apm audit --ci --no-drift --no-policy` step, dedicated `test` job, workflow-level concurrency.
 - [#13 Adopt native tool configs for lint/format](https://github.com/edwinhern/dotfiles/pull/13) — `.shellcheckrc`, `.prettierignore`, `taplo.toml`, `.editorconfig` with `shell_variant = bash`; slim wrapper scripts; IDE-extension parity with CI.
+- [#14 Extract APM install library with shell coverage](https://github.com/edwinhern/dotfiles/pull/14) - `lib/install/apm.sh`, Darwin-gated template injection, direct APM bats tests, and shebang coverage for the rendered run script.
 
 **Reference:** [shunk031/dotfiles](https://github.com/shunk031/dotfiles) — pattern source.
 
@@ -20,26 +21,26 @@ Original `.github/workflows/ci.yaml` friction (PR #12 resolved items 1, 2, 5; PR
 2. ~~Inline `cp` plumbing in `validate_apm` re-implements parts of `chezmoi apply` manually.~~ (intentionally retained per PR #12 design — the rendered `$HOME/.apm` shape is what the dotfiles actually deploy; audit replays validate it)
 3. No caching of mise/chezmoi/APM binaries — every CI run re-downloads via `curl`. (still open; caching deferred per Section 3 design)
 4. One monolithic workflow with four jobs of mixed concerns. (deferred — splitting deferred until duplication is fully extracted)
-5. ~~Ad-hoc `curl | sh` installs of chezmoi and APM repeated across jobs.~~ (APM resolved in PR #12 via mise; chezmoi `curl | sh` removal queued for a follow-up now that the current PR pins chezmoi via mise)
+5. ~~Ad-hoc `curl | sh` installs of chezmoi and APM repeated across jobs.~~ (APM resolved in PR #12 via mise; chezmoi `curl | sh` removal queued for a follow-up now that PR #14 pins chezmoi via mise)
 
 **Primary goal:** maintainability / best practices. Secondary goal: better coverage via shell-level unit tests. Speed is fine as-is.
 
 ## Decisions made so far
 
-### 1. Library structure (Approach 1 — approved, implementation in flight)
+### 1. Library structure (Approach 1 — approved, implemented)
 
 Reusable shell snippets live in `home/.chezmoitemplates/lib/` so chezmoi can inject them into `.chezmoiscripts/` via `{{ template "..." . }}`. Files are pure shell (no Go template syntax), making them sourceable and testable in isolation.
 
 ```
 home/.chezmoitemplates/lib/
 ├── common/                       # OS-agnostic helpers
-│   ├── log.sh                    # log_info, log_warn, log_error  (✅ shipped in current PR)
+│   ├── log.sh                    # log_info, log_warn, log_error  (✅ shipped in PR #14)
 │   ├── error.sh                  # die, retry, with_timeout       (deferred until a caller needs it)
 │   └── os-detect.sh              # is_darwin, is_linux, has_command (deferred until a caller needs it)
 ├── darwin/                       # macOS-specific (deferred)
 │   └── homebrew.sh               # brew_install_if_missing
 └── install/                      # cross-cutting install routines
-    ├── apm.sh                    # apm_install_main (✅ shipped in current PR)
+    ├── apm.sh                    # apm_install_main (✅ shipped in PR #14)
     └── chezmoi.sh                # chezmoi_install_if_missing (deferred until a caller needs it)
 ```
 
@@ -64,7 +65,7 @@ Consuming `.chezmoiscripts/*.tmpl` files pull in lib content inside their OS gua
 
 - `bats-core` — test runner.
 - `bats-support`, `bats-assert`, `bats-file` — vendored under `tests/test_helpers/` (~100 KB total, no network dependency at test time).
-- `chezmoi` — pinned (current PR) so `tests/template/` tests render without an external install.
+- `chezmoi` — pinned in PR #14 so `tests/template/` tests render without an external install.
 
 **Layout:**
 
@@ -72,12 +73,12 @@ Consuming `.chezmoiscripts/*.tmpl` files pull in lib content inside their OS gua
 tests/
 ├── test_helpers/                 # vendored bats companion libs + load.bash
 ├── unit/
-│   ├── lib/common/log.bats       # ✅ shipped in current PR (9 tests)
-│   ├── lib/install/apm.bats       # ✅ shipped in current PR (2 tests)
+│   ├── lib/common/log.bats       # ✅ shipped in PR #14 (9 tests)
+│   ├── lib/install/apm.bats       # ✅ shipped in PR #14 (2 tests)
 │   ├── statusline.bats           # tests/integration for home/dot_claude/statusline-command.sh (4 tests)
-│   └── write-chezmoi-config.bats # ✅ shipped in current PR (7 tests, covers personal/work/invalid)
+│   └── write-chezmoi-config.bats # ✅ shipped in PR #14 (7 tests, covers personal/work/invalid)
 ├── template/
-│   └── install-apm-script.bats   # ✅ shipped in current PR (6 tests, renders + asserts lib injection)
+│   └── install-apm-script.bats   # ✅ shipped in PR #14 (8 tests, renders + asserts lib injection)
 └── fixtures/
     └── statusline/{full-payload,minimal,worktree}.json
 ```
@@ -98,7 +99,7 @@ test-template:  mise exec -- bats --recursive tests/template
 [tools]
 "github:microsoft/apm" = "0.13.0"
 bats = "1.13.0"
-chezmoi = "2.70.3"           # ✅ added in current PR (enables template tests)
+chezmoi = "2.70.3"           # ✅ added in PR #14 (enables template tests)
 prettier = "3.8.3"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
@@ -177,7 +178,7 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [x] Add `taplo.toml` (include/exclude globs).
 - [x] Slim `scripts/lint.sh` and `scripts/format.sh` (drop tool-specific flag soup).
 
-### Current PR — library extraction + shell coverage
+### PR #14 - library extraction + shell coverage (merged)
 
 - [x] Add `home/.chezmoitemplates/lib/common/log.sh` (`log_info`, `log_warn`, `log_error`).
 - [x] Add `home/.chezmoitemplates/lib/install/apm.sh` with executable bash script shape and `apm_install_main`.
@@ -185,7 +186,7 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [x] Add `tests/unit/lib/common/log.bats` (9 tests covering stdout/stderr routing, prefixes, special chars).
 - [x] Add `tests/unit/lib/install/apm.bats` with fake `apm` on `PATH`.
 - [x] Add `tests/unit/write-chezmoi-config.bats` (7 tests covering personal/work/invalid contexts and re-runs).
-- [x] Add `tests/template/install-apm-script.bats` (6 tests; verifies lib injection and rendered-script bash syntax).
+- [x] Add `tests/template/install-apm-script.bats` (8 tests; verifies lib injection, Darwin rendering, shebang, and rendered-script bash syntax).
 - [x] Pin `chezmoi = "2.70.3"` in `mise.toml` so template tests run anywhere with mise.
 - [x] Extend `scripts/lint.sh` and `scripts/format.sh` find scopes to `home/.chezmoitemplates/`.
 
