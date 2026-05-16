@@ -146,13 +146,13 @@ Expected: PASS.
 
 - [ ] **Step 2: Run all tests**
 
-Run: `make test`
+Run: `mise test`
 
 Expected: PASS.
 
 - [ ] **Step 3: Run lint**
 
-Run: `make lint`
+Run: `mise lint`
 
 Expected: PASS.
 

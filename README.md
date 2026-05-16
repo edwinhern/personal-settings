@@ -18,16 +18,18 @@ After the first apply, `chezmoi apply` is self-completing: editing `home/.chezmo
 
 ## Working on this repo
 
-These targets operate against the local clone (via `chezmoi --source $PWD`), so you can test edits without pushing:
+These tasks operate against the local clone (via `chezmoi --source $PWD`), so you can test edits without pushing:
 
 ```sh
-make update            # apply local source state to $HOME
-make diff              # preview what apply would change
-make format            # format shell, md, yaml, toml
-make lint              # lint shell, md, yaml, toml
-make validate          # validate APM packages
-make check             # lint + validate
+mise update            # apply local source state to $HOME
+mise diff              # preview what apply would change
+mise format            # format shell, md, yaml, toml
+mise lint              # lint shell, md, yaml, toml
+mise test              # run bats tests
+mise check             # lint + test
 ```
+
+Repo tasks live in `mise.toml`.
 
 Day-to-day chezmoi commands (run from anywhere — they target `~/.local/share/chezmoi`):
 

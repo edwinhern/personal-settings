@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - run: make lint
+      - run: mise lint
 
   validate_apm:
     name: Validate APM config (${{ matrix.context }})
@@ -90,4 +90,4 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - run: make test
+      - run: mise test

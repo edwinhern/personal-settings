@@ -83,17 +83,20 @@ tests/
     └── statusline/{full-payload,minimal,worktree}.json
 ```
 
-**Make targets:**
+**Mise tasks:**
 
-```makefile
-test:           mise exec -- bats --recursive tests/unit tests/template
-test-unit:      mise exec -- bats --recursive tests/unit
-test-template:  mise exec -- bats --recursive tests/template
+```sh
+mise lint           # lint shell, markdown, YAML, and TOML
+mise format         # format shell, markdown, YAML, and TOML
+mise test           # run all bats tests
+mise test-unit      # run bats unit tests
+mise test-template  # run bats template tests
+mise check          # lint + test
 ```
 
-`make check` runs `lint`, `validate`, and `test` in sequence.
+`mise check` runs `lint` and `test` in sequence.
 
-### 3. `mise.toml` — single source of truth for tool versions
+### 3. `mise.toml` - single source of truth for tool versions and tasks
 
 ```toml
 [tools]
@@ -114,7 +117,7 @@ Resume by reading these in their repo if/when the next slice needs them:
 
 1. `tests/install/common/*.bats` — concrete OS-segmented test code style.
 2. `.github/workflows/test.yaml` — `changes` job using `git diff --name-only` against base ref to gate heavier matrix.
-3. Their `Makefile` test wiring.
+3. Their bats test wiring.
 4. `bats_load_library` mechanism — would replace vendoring of bats-assert/file/support if mise gains a plugin for them.
 
 ## Section 3 — CI workflow refactor (implemented in PR #12)
@@ -124,7 +127,7 @@ See PR #12 for the implemented design. Summary:
 - `.github/actions/write-chezmoi-config/` composite action with `context` input.
 - `mise.toml`-managed APM (`mise exec -- apm install --dry-run --global`).
 - `apm audit --ci --no-drift --no-policy` against a scratch project.
-- Dedicated `test` job running `make test`.
+- Dedicated `test` job running the bats suite.
 - Workflow-level `concurrency` block cancelling superseded runs.
 
 ### Section 3 follow-ups (still open)
@@ -141,8 +144,8 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 
 - `.chezmoitemplates/lib/` for reusable shell snippets (pure shell; injected via `{{ template }}`).
 - `tests/` for bats unit + template tests; `tests/test_helpers/load.bash` as the single loader.
-- `make test` / `make test-unit` / `make test-template` workflow.
-- Native tool configs (`.shellcheckrc`, `.prettierignore`, `taplo.toml`, `.editorconfig`) are the source of truth; wrapper scripts in `scripts/` are thin orchestrators.
+- `mise test` / `mise test-unit` / `mise test-template` workflow.
+- Native tool configs (`.shellcheckrc`, `.prettierignore`, `taplo.toml`, `.editorconfig`) and `mise.toml` tasks are the source of truth for dev tooling.
 - YAGNI rule for `lib/` primitives: add only when a caller needs it.
 
 ## Migration plan
@@ -153,9 +156,9 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [x] Vendor `bats-support`, `bats-assert`, `bats-file` under `tests/test_helpers/`.
 - [x] Add `tests/test_helpers/load.bash`.
 - [x] Add statusline fixtures under `tests/fixtures/statusline/`.
-- [x] Add `make test`, `make test-unit`, `make test-template` targets.
+- [x] Add initial `make test`, `make test-unit`, `make test-template` targets. (removed later when mise tasks became the repo entrypoint)
 - [x] Add `tests/unit/statusline.bats`.
-- [x] Include bats tests in `make check`.
+- [x] Include bats tests in the local check target.
 
 ### PR #12 — CI setup refactor (merged)
 
@@ -166,7 +169,7 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [x] Keep rendered `$HOME/.apm` project setup unchanged.
 - [x] Keep `apm install --dry-run --global` for the initial refactor.
 - [x] Add baseline `apm audit --ci --no-drift --no-policy` after the rendered APM project is prepared.
-- [x] Add a dedicated `test` job that runs `make test`.
+- [x] Add a dedicated `test` job that runs bats tests.
 - [x] Add workflow-level concurrency cancelling superseded runs.
 - [x] Co-locate `write-chezmoi-config.sh` next to its composite action.
 
@@ -190,6 +193,14 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [x] Pin `chezmoi = "2.70.3"` in `mise.toml` so template tests run anywhere with mise.
 - [x] Extend `scripts/lint.sh` and `scripts/format.sh` find scopes to `home/.chezmoitemplates/`.
 
+### Main cleanup - mise task migration
+
+- [x] Move lint, format, test, and check commands into `mise.toml` tasks.
+- [x] Remove `scripts/lint.sh`, `scripts/format.sh`, and `scripts/compile.sh`.
+- [x] Remove the local `make validate` target because CI owns rendered APM validation.
+- [x] Remove the Makefile after moving repo tasks into `mise.toml`.
+- [x] Update CI lint and test jobs to call mise tasks directly.
+
 ### Later PRs
 
 - [ ] Remove `curl | sh` chezmoi installs from CI workflow now that chezmoi is in `mise.toml`. (~3-line PR)
@@ -202,4 +213,4 @@ Capture the new patterns as documented conventions in `home/dot_claude/CLAUDE.md
 - [ ] Verify whether `bats_load_library` or a future mise plugin can replace vendoring of bats companion libs.
 - [ ] Read `tests/install/common/*.bats` from shunk031/dotfiles for concrete test style.
 - [ ] Read `.github/workflows/test.yaml` in full from shunk031/dotfiles.
-- [ ] Read shunk031's Makefile test wiring in full.
+- [ ] Read shunk031's bats test wiring in full.

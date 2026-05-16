@@ -163,7 +163,7 @@
       "pipx *": "allow",
       "uv *": "allow",
       "ruff *": "allow",
-      "make *": "allow",
+      "mise *": "allow",
       "cmake *": "allow",
       "shellcheck *": "allow",
       "jj *": "allow",
