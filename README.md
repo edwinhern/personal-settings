@@ -30,12 +30,3 @@ mise check             # lint + test
 ```
 
 Repo tasks live in `mise.toml`.
-
-Day-to-day chezmoi commands (run from anywhere — they target `~/.local/share/chezmoi`):
-
-```sh
-chezmoi add ~/.foo     # bring an existing file under management
-chezmoi re-add         # pull live-edited files back into source state — use after an app rewrote its config
-chezmoi edit ~/.foo    # edit the source-state version of a managed file
-chezmoi status         # what would change vs source state
-```
