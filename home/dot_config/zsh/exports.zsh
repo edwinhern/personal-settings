@@ -4,6 +4,8 @@
 export PATH="$HOME/.local/bin:$PATH"
 # Ability to open editor in OpenCode
 export EDITOR="code --wait"
+# Enable exa (WebSearch) for OpenCode
+export OPENCODE_ENABLE_EXA=1
 
 # Personal: chezmoi decrypts ~/.secrets.local from age-encrypted source state.
 # Work: maintain ~/.secrets.local by hand on the machine; never commit it.

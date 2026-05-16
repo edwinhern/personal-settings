@@ -12,6 +12,10 @@ dependencies:
     - obra/superpowers
     - anthropics/claude-plugins-official/plugins/skill-creator
   mcp:
+    - name: grep
+      registry: false
+      transport: http
+      url: https://mcp.grep.app
 {{ if .work }}
     - name: figma
       registry: false
