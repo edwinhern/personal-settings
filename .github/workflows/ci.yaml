@@ -31,8 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - name: Install chezmoi
-        run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
       - name: Stub chezmoi config (${{ matrix.context }} context)
         uses: ./.github/actions/write-chezmoi-config
         with:
@@ -40,7 +38,7 @@ jobs:
       - name: Render apm.yml from template
         run: |
           mkdir -p "$HOME/.apm"
-          "$HOME/.local/bin/chezmoi" execute-template < home/dot_apm/apm.yml.tmpl > "$HOME/.apm/apm.yml"
+          mise exec -- chezmoi execute-template < home/dot_apm/apm.yml.tmpl > "$HOME/.apm/apm.yml"
           cp home/dot_apm/apm.lock.yaml "$HOME/.apm/apm.lock.yaml"
           cp -r home/dot_apm/dot_apm "$HOME/.apm/.apm"
       - name: Dry-run apm install
@@ -71,15 +69,14 @@ jobs:
         context: [personal, work]
     steps:
       - uses: actions/checkout@v6
-      - name: Install chezmoi
-        run: sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
+      - uses: jdx/mise-action@v4
       - name: Stub chezmoi config (${{ matrix.context }} context)
         uses: ./.github/actions/write-chezmoi-config
         with:
           context: ${{ matrix.context }}
       - name: Dry-run apply
         run: |
-          "$HOME/.local/bin/chezmoi" apply \
+          mise exec -- chezmoi apply \
             --source "$PWD" \
             -n \
             -v
