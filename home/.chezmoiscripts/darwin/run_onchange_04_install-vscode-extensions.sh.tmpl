@@ -1,21 +1,9 @@
-{{- if eq .chezmoi.os "darwin" -}}
-
-#!/bin/bash
-# .chezmoiscripts/darwin/run_onchange_04_install-vscode-extensions.sh.tmpl
-# Installs VS Code extensions from extensions.yaml vscode section.
-# Reruns automatically whenever extensions.yaml changes.
-#
+#!/usr/bin/env bash
 # extensions.yaml hash: {{ include ".chezmoidata/extensions.yaml" | sha256sum }}
-set -euo pipefail
 
-if ! command -v code &>/dev/null; then
-  echo "VS Code CLI not found — open VS Code and run: Shell Command: Install 'code' command in PATH"
-  exit 0
-fi
-
-echo "Installing VS Code extensions..."
-
-extensions=(
+{{ if eq .chezmoi.os "darwin" }}
+{{ template "lib/common/log.sh" . }}
+VSCODE_EXTENSIONS=(
   # shared
   {{ range .vscode.shared -}}
   "{{ . }}"
@@ -33,22 +21,5 @@ extensions=(
   {{ end -}}
   {{- end }}
 )
-
-# Install best-effort. A built-in / pre-release extension may refuse to be
-# replaced by an older marketplace version — we log and continue rather than
-# aborting the whole apply.
-failed=()
-for ext in "${extensions[@]}"; do
-  [[ -z "$ext" ]] && continue
-  if ! code --install-extension "$ext" --force; then
-    failed+=("$ext")
-  fi
-done
-
-if [[ ${#failed[@]} -gt 0 ]]; then
-  echo "WARNING: ${#failed[@]} extension(s) failed to install:" >&2
-  printf '  - %s\n' "${failed[@]}" >&2
-fi
-
-echo "VS Code extensions installed."
-{{- end }}
+{{ template "lib/install/vscode.sh" . }}
+{{ end }}
