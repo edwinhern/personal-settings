@@ -22,7 +22,7 @@ If the user does not give a PR number, infer it only when `gh pr view --json num
 - Confirm the latest `main` CI for the merge commit passed.
 - Confirm the final git status is clean.
 
-Do not choose the next issue. Do not merge PRs, close issues, delete branches, or delete worktrees unless the user explicitly asks.
+Do not choose the next issue. Do not merge PRs, close issues, delete branches, or delete worktrees.
 
 ## Workflow
 
@@ -48,13 +48,16 @@ Do not choose the next issue. Do not merge PRs, close issues, delete branches, o
    Require `state` to be `CLOSED`.
 
 6. Verify project status:
-   Run `gh project item-list 6 --owner edwinhern --format json --limit 100`.
-   For each closing issue, find the item whose `content.number` matches the issue number.
-   Require `status` to be `Done`.
+   Run `gh project view 6 --owner edwinhern --format json`.
+   Require `title` to be `dotfiles`.
+   For each closing issue, run `gh project item-list 6 --owner edwinhern --format json --query "#<ISSUE>" --limit 20`.
+   Find the item whose `content.number` matches the issue number.
+   If no matching project item is found, report it and stop.
+   Require the matching item `status` to be `Done`.
 
 7. Verify CI for the merge commit:
-   Run `gh run list --repo edwinhern/dotfiles --branch main --commit <MERGE_SHA> --json databaseId,displayTitle,workflowName,status,conclusion,headSha,url --limit 20`.
-   Require at least one run for `<MERGE_SHA>` and require every returned run to have `status` `completed` and `conclusion` `success`.
+   Run `gh run list --repo edwinhern/dotfiles --branch main --commit <MERGE_SHA> --workflow CI --json databaseId,displayTitle,workflowName,status,conclusion,headSha,url --limit 1`.
+   Require one `CI` workflow run for `<MERGE_SHA>` and require it to have `status` `completed` and `conclusion` `success`.
 
 8. Verify final local state:
    Run `git status --short --branch`.
@@ -67,8 +70,9 @@ Return a concise checklist with evidence:
 - `main` sync result and current branch line
 - PR number, merged state, merged time, and merge SHA
 - Each closing issue number and closed state
+- Project title
 - Each project item status
-- CI run count, conclusion, and URL
+- CI workflow conclusion and URL
 - Final git status
 
 If any check fails, report the failed check, include the command evidence, and stop without claiming cleanup is complete.

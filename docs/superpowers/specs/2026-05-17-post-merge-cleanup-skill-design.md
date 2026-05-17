@@ -29,9 +29,10 @@ The skill verifies these checks with fresh commands:
 3. Local `main` is checked out and fast-forwarded with `git pull --ff-only`.
 4. Requested PR is `MERGED` and has a merge commit SHA.
 5. PR closing issue references are present and closed.
-6. Closing issue project items in the `dotfiles` project are `Done`.
-7. GitHub Actions runs on `main` for the merge commit completed with `success`.
-8. Final git status is clean.
+6. Project `6` is titled `dotfiles`, and each closing issue is looked up in the project with a server-side issue-number query.
+7. Closing issue project items in the `dotfiles` project are present and `Done`.
+8. The latest `CI` workflow run on `main` for the merge commit completed with `success`.
+9. Final git status is clean.
 
 ## Non-Goals
 
