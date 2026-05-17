@@ -27,7 +27,7 @@ The initial Neovim setup is the upstream LazyVim starter layout adapted to chezm
 
 ## Deferred Work
 
-Track `opencode.nvim` in a separate issue. That work should decide how the user starts OpenCode with a server port, which keymaps are useful, and whether `folke/snacks.nvim` should be used for the UI path.
+Track `opencode.nvim` in issue [#32](https://github.com/edwinhern/dotfiles/issues/32). That work should decide how the user starts OpenCode with a server port, which keymaps are useful, and whether `folke/snacks.nvim` should be used for the UI path.
 
 ## Verification
 
