@@ -24,6 +24,11 @@ packages:
           - fzf
           - lazygit
           - neovim
+          - tree-sitter-cli
+          - imagemagick
+          - ghostscript
+          - tectonic
+          - mermaid-cli
         casks:
           # fonts
           - font-monaspace
