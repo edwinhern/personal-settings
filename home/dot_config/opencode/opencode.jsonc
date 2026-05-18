@@ -29,10 +29,12 @@
     },
   },
   "plugin": [
-    "@franlol/opencode-md-table-formatter@latest",
-    "@tarquinen/opencode-dcp@latest",
     "@superwhisper/opencode",
-    "opencode-websearch-cited@1.2.0",
+    "@tarquinen/opencode-dcp",
+    "@franlol/opencode-md-table-formatter",
+    "opencode-websearch-cited",
+    "@mohak34/opencode-notifier",
+    "opencode-supermemory",
     "opencode-wakatime",
   ],
   "mcp": {
