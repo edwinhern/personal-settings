@@ -1,5 +1,6 @@
 # zsh aliases and small helper functions
 
+alias cd="z"
 alias find="fd"
 alias o="open ."
 alias l="ls"
