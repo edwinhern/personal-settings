@@ -19,9 +19,14 @@ Connect LazyVim to a running OpenCode server while keeping tmux responsible for 
 
 - Add `home/dot_config/nvim/lua/plugins/opencode.lua` as the LazyVim plugin spec.
 - Install `nickjvandyke/opencode.nvim` through `lazy.nvim` with `version = "*"`.
+- Load `opencode.nvim` at startup so `:checkhealth opencode` is available without a manual `:Lazy load` step.
 - Set `vim.o.autoread = true` so buffers reload after OpenCode edits files.
 - Keep `server.port = nil` so the plugin can discover the `opencode --port` server.
+- Set `server.start`, `server.stop`, and `server.toggle` to `false` so `opencode.nvim` does not create a Neovim-managed OpenCode terminal.
+- Hide the OpenCode server action from the generic select menu because `<leader>oS` handles server selection directly.
 - Add the optional `folke/snacks.nvim` picker action because LazyVim already includes Snacks and the integration is recommended by `opencode.nvim`.
+- Add LazyVim health-check tools `fd`, `fzf`, and `lazygit` to shared Homebrew formulas.
+- Disable lazy.nvim rocks support because this config does not use LuaRocks plugins.
 
 ## Keymaps
 
@@ -39,4 +44,6 @@ The keymaps avoid `<C-a>`, `<C-x>`, and terminal-toggle bindings because this re
 - Open Neovim in the left pane with `nvim .`.
 - Run `:Lazy` and confirm `opencode.nvim` is installed.
 - Run `:checkhealth opencode` after plugin installation.
+- Run `:checkhealth lazy` and confirm the unused LuaRocks warning is gone.
+- Run `:checkhealth lazyvim` and confirm `fd`, `fzf`, and `lazygit` are available after Homebrew applies packages.
 - `mise check` passes.

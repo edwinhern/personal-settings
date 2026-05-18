@@ -2,6 +2,7 @@ return {
   {
     "nickjvandyke/opencode.nvim",
     version = "*",
+    lazy = false,
     dependencies = {
       {
         "folke/snacks.nvim",
@@ -61,6 +62,12 @@ return {
       vim.g.opencode_opts = {
         server = {
           port = nil,
+          start = false,
+          stop = false,
+          toggle = false,
+        },
+        select = {
+          server = false,
         },
       }
 
