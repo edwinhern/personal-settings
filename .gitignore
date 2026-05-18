@@ -3,3 +3,4 @@ apm_modules/
 
 .DS_Store
 .claude
+.worktrees/
