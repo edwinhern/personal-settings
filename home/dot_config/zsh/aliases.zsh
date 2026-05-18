@@ -1,8 +1,10 @@
 # zsh aliases and small helper functions
 
+alias find="fd"
 alias o="open ."
 alias l="ls"
 alias ll="ls -al"
+alias lg="lazygit"
 # shellcheck disable=SC2139 # ZDOTDIR is set at shell start; expand at alias define is fine
 alias ozh='code ${ZDOTDIR:-$HOME}/.zshrc'
 # shellcheck disable=SC2139
